@@ -1,3 +1,19 @@
+<?php
+session_start();
+require 'php/db_connection.php';
+
+if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
+  if (isset($_SESSION['user_id'])) {
+    header("Location: php/user_profile.php");
+    exit();
+  } else {
+    header("Location: php/login.php");
+    exit();
+  }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +22,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Savoy</title>
   <link rel="icon" href="./Images/favicon.png" type="image/png" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -36,6 +52,8 @@
       <div class="menu_icon" onclick="toggleMenu()">
         <i class="fas fa-bars"></i>
       </div>
+
+      <a href="?action=check_session"><i class="fa-solid fa-user" style="color: #ffffff;"></i></a>
     </div>
   </nav>
 
@@ -43,8 +61,6 @@
     <div class="swiper-container">
       <div class="swiper-wrapper">
         <?php
-        session_start();
-        require 'php/db_connection.php';
 
         $query = $db->query("SELECT banner.banner_poster, movie_title, movies.movie_id FROM banner join movies ON banner.movie_id = movies.movie_id");
 
@@ -57,7 +73,8 @@
               <div class="movie_detail">
                 <h1><?php echo htmlspecialchars($row["movie_title"]); ?></h1>
                 <a href="php/booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>">Buy Tickets</a>
-                <a href="php/movie_details.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>" class="border_btn">More Info</a>
+                <a href="php/movie_details.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>"
+                  class="border_btn">More Info</a>
               </div>
             </div>
           <?php }

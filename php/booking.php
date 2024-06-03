@@ -1,80 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+session_start();
+require 'db_connection.php';
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Savoy</title>
-    <link rel="icon" href="../Images/favicon.png" type="image/png" />
-    <link rel="stylesheet" href="../styles.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head>
+// Set the movie_id from POST request or session
+if (isset($_POST['movie'])) {
+    $_SESSION['movie_id'] = $_POST['movie'];
+    header("Location: booking.php?movie=" . $_SESSION['movie_id']);
+    exit();
+}
 
-<body>
-    <nav class="navbar flex_align_center" id="navbar">
-        <div class="left_nav">
-            <div class="logo">
-                <img src="../Images/logo.png" alt="Logo" />
-            </div>
-            <ul class="nav_links">
-                <li><a href="index.php">Home</a></li>
-                <li><a href="movies.html">Movies</a></li>
-                <li><a href="theatre.html">Theatre</a></li>
-            </ul>
-        </div>
-        <!-- <div class="search_box">
-        <input type="text" placeholder="Search" />
-        <i class="fas fa-search"></i>
-      </div> -->
-        <div class="right_nav">
-            <a href="./php/booking.php" class="buy_tickets">
-                <img src="../Images/tickets.png" alt="Ticket Icon" class="ticket_icon" />
-                Buy Movie Tickets
-            </a>
-            <div class="menu_icon" onclick="toggleMenu()">
-                <i class="fas fa-bars"></i>
-            </div>
-        </div>
-    </nav>
-    <?php
-    session_start();
-    require 'db_connection.php';
+// Get the movie_id from session or GET request
+$movie_id = $_SESSION['movie_id'] ?? $_GET['movie'] ?? null;
 
-    if (!isset($_SESSION['movie'])) {
-        $_SESSION['movie_id'] = $_GET['movie'];
+$selected_movie = null;
+$all_movies = [];
+
+// Fetch all movies for the dropdown
+$sql_all_movies = "SELECT movie_id, movie_title FROM movies";
+$result_all_movies = $db->query($sql_all_movies);
+while ($row = $result_all_movies->fetch_assoc()) {
+    $all_movies[] = $row;
+}
+
+if ($movie_id) {
+    // Function to fetch movie details
+    function getMovieDetails($db, $movie_id)
+    {
+        $sql = "SELECT movie_id, movie_title FROM movies WHERE movie_id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->bind_param("s", $movie_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
     }
 
-    $movie_id = $_SESSION['movie_id'];
+    // Fetch details for the selected movie
+    $selected_movie = getMovieDetails($db, $movie_id);
 
-    $query = $db->query("SELECT * FROM movies Where movie_id = '$movie_id'");
+    if ($selected_movie) {
+        // Prepare the SQL statement to fetch the selected movie's showtimes
+        $sql = "
+            SELECT 
+                s.date AS date, s.time AS time 
+            FROM 
+                showtimes s 
+            WHERE 
+                s.movie_id = ? 
+            ORDER BY 
+                s.date, s.time";
 
-    if ($query->num_rows > 0) {
-        while ($row = $query->fetch_assoc()) {
-            $imageURL = '../uploaded_movie_posters/' . $row["movie_poster"];
-            ?>
-            <section class="banner">
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
+        $stmt = $db->prepare($sql);
+        $stmt->bind_param("s", $movie_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-                        <div class="swiper-slide">
-                            <img src="<?php echo $imageURL; ?>" alt="" />
-                            <div class="movie_detail">
-                                <h1 class="with_language"><?php echo htmlspecialchars($row["movie_title"]); ?></h1>
-                                <h3>Language - <?php echo htmlspecialchars($row["language"]); ?></h3>
-                                <a href="#">Buy Tickets</a>
-                                <a href="<?php echo htmlspecialchars($row["movie_trailer"]); ?>" class="border_btn">Watch
-                                    Trailer</a>
-                            </div>
-                        </div>
+        $selected_movie['showtimes'] = [];
+        while ($row = $result->fetch_assoc()) {
+            $selected_movie['showtimes'][$row['date']][] = $row['time'];
+        }
 
-                    </div>
-                </div>
-            </section>
+        $stmt->close();
+    } else {
+        echo "Error: Unable to fetch movie details.";
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movies</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Select a Movie</h2>
+    <form method="post" id="movieSelectForm">
+        <div class="form-group">
+            <label for="movie">Choose Movie:</label>
+            <select class="form-control" id="movieSelect" name="movie"
+                    onchange="document.getElementById('movieSelectForm').submit();">
+                <option value="">--Select Movie--</option>
+                <?php foreach ($all_movies as $movie_option): ?>
+                    <option value="<?php echo $movie_option['movie_id']; ?>" <?php echo ($movie_option['movie_id'] == $movie_id) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($movie_option['movie_title']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </form>
+    <?php if ($selected_movie): ?>
+        <div class="movie">
+            <h3><?php echo htmlspecialchars($selected_movie['movie_title']); ?></h3>
 
-        <?php }
-    } ?>
-
+            <?php if (!empty($selected_movie['showtimes'])): ?>
+                <h4>Select Date:</h4>
+                <ul>
+                    <?php foreach ($selected_movie['showtimes'] as $date => $showtimes): ?>
+                        <li>
+                            <?php echo htmlspecialchars($date); ?>:
+                            <ul>
+                                <?php foreach ($showtimes as $time): ?>
+                                    <li><?php echo htmlspecialchars($time); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p>No showtimes available for this movie.</p>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+</div>
 </body>
 </html>
