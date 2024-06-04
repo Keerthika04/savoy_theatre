@@ -351,7 +351,6 @@ body {
 /* movie booking Bg */
 .booking_head_nav{
   display: flex;
-  position: absolute;
   z-index: 999;
   align-items: center;
   position: relative;
@@ -368,6 +367,7 @@ body {
 
 .booking_head_nav a{
   position: absolute;
+  left: 2rem;
   z-index: 2;
 }
 
