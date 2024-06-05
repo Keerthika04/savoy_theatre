@@ -1,0 +1,264 @@
+body {
+  color: var(--white);
+  position: relative;
+  text-align: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+/* Background Blur */
+.movie_booking_page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  filter: blur(10px);
+  z-index: -999;
+}
+
+.black_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.60);
+  z-index: 1;
+}
+
+.contents {
+  position: relative;
+  z-index: 2;
+}
+
+.movie {
+  padding: 4rem 10%;
+}
+
+/* Nav */
+.top_nav,
+.bottom_nav {
+  display: flex;
+  position: relative;
+}
+
+.top_nav {
+  align-items: center;
+  color: var(--white);
+  background-color: var(--darkBg);
+  padding: 1dvh 6dvh;
+}
+
+.top_nav h4 {
+  margin: 0.2rem;
+  width: 100%;
+  text-align: center;
+}
+
+.bottom_nav {
+  align-items: stretch;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.45);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.45);
+}
+
+
+.bottom_nav form .form-group {
+  margin: 0;
+}
+
+.movie_selection,
+.movie_selection:focus {
+  background: none;
+  border: none;
+  border-radius: 0;
+  color: var(--white);
+  box-shadow: none;
+}
+
+.movie_selection:focus {
+  background-color: var(--darkBg);
+  border-radius: 0;
+  border: 1px solid var(--white);
+}
+
+.bottom_nav_border {
+  margin: 0 1rem;
+  display: flex;
+  align-items: center;
+  border-left: 1px solid rgba(255, 255, 255, 0.45);
+  border-right: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.center{
+  display: flex;
+  align-items: center;
+}
+
+.bottom_nav a {
+  padding: 0 1rem;
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 0;
+}
+
+/* Ticket */
+.movie_bg{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: url(../Images/ticket_bg.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 5px;
+  border-top: 5px solid var(--white);
+  border-bottom: 5px solid var(--white);
+  padding: 2rem;
+  position: relative;
+  z-index: -1;
+}
+
+.radio-btn-group{
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+.ticket{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 1rem;
+  box-sizing: border-box;
+  max-width: 150px;
+}
+
+.ticket img{
+  position: absolute;
+  z-index: -1;
+  height: 4rem;
+  filter: sepia(100%);
+}
+
+/* Date */
+.radio-btn-group input[type="radio"] {
+  display: none;
+}
+
+.radio-btn-group label {
+  position: relative;
+  display: inline-block;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 1rem;
+  cursor: pointer;
+  margin: 0 2px;
+  color: var(--darkBg);
+  font-weight: 600;
+}
+
+.radio-btn-group input[type="radio"]:checked ~ img {
+  filter: hue-rotate(119deg);
+}
+
+/* Time */
+.showtimes{
+
+}
+
+.showtimes h5{
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.showtime-list {
+  display: none;
+}
+
+.showtime-list input[type="radio"] {
+  display: none;
+}
+
+.showtime-list label {
+  display: inline-block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  padding: 6px 16px;
+  margin: 6px 19px 0 0;
+  border: 1px solid var(--white);
+  border-radius: 25px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.35);
+  box-shadow: 2px 2px 6px 0 rgba(0, 0, 0, 0.8);
+  color: var(--white);
+}
+
+.showtime-list input[type="radio"]:checked + label {
+  background-color: var(--white);
+  color: var(--darkBg);
+}
+
+.showtime-list  label > i{
+ color: #ffffff;
+}
+
+.showtime-list input[type="radio"]:checked +  label > i {
+  color: var(--darkBg);
+}
+
+.count,
+.count .form-group{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.count{
+  margin: 0 auto;
+  margin: 2rem 0;
+}
+
+.count .form-group{
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+.count .form-group input{
+  width: 5rem;
+}
+
+.count .form-group label{
+  margin: 0 ;
+}
+
+.seat {
+  width: 30px;
+  height: 30px;
+  margin: 3px;
+  background-color: #ccc;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+}
+
+.selected {
+  background-color: blue;
+  color: white;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+}
+
+.modal-content {
+  padding: 20px;
+}

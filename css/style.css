@@ -348,51 +348,6 @@ body {
   opacity: 0.8;
 }
 
-/* movie booking Bg */
-.booking_head_nav{
-  display: flex;
-  z-index: 999;
-  align-items: center;
-  position: relative;
-  padding: 1dvh 6dvh;
-  color: var(--white);
-  background-color: var(--darkBg);
-}
-
-.booking_head_nav h1{
-  margin: 0.2rem;
-  width: 100%;
-  text-align: center;
-}
-
-.booking_head_nav a{
-  position: absolute;
-  left: 2rem;
-  z-index: 2;
-}
-
-.movie_booking_page {
-  width: 100%;
-  height: 100dvh;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  filter: blur(10px);
-  position: absolute;
-  z-index: -999;
-}
-
-.black_overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.25);
-  z-index: -998;
-}
-
 @media (max-width: 768px) {
   .nav_links {
     display: none;

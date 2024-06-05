@@ -4,7 +4,7 @@ require 'db_connection.php';
 
 function getMovies($db)
 {
-    $sql = "SELECT movie_id, movie_title FROM movies";
+    $sql = "SELECT movie_id, movie_title FROM movies where current_movies = 1";
     $result = $db->query($sql);
     if (!$result) {
         die("Error fetching movies: " . $db->error);
@@ -53,11 +53,26 @@ $all_movies = getMovies($db);
 $selected_movie = null;
 $showtimes = [];
 
-if ($movie_id) {
+if (!$movie_id) {
+    if (!empty($all_movies)) {
+        $movie_id = $all_movies[0]['movie_id'];
+        $selected_movie = getMovieDetails($db, $movie_id);
+        $imageURL = '../uploaded_movie_posters/' . $selected_movie["movie_poster"];
+        if ($selected_movie) {
+            $showtimes = getShowtimes($db, $movie_id);
+            $selected_movie['showtimes'] = $showtimes;
+        } else {
+            echo "<p>Error: Unable to fetch movie details.</p>";
+        }
+    } else {
+        echo "<p>Error: No movies found in the database.</p>";
+    }
+} else {
     $selected_movie = getMovieDetails($db, $movie_id);
     if ($selected_movie) {
         $showtimes = getShowtimes($db, $movie_id);
         $selected_movie['showtimes'] = $showtimes;
+        $imageURL = '../uploaded_movie_posters/' . $selected_movie["movie_poster"];
     } else {
         echo "<p>Error: Unable to fetch movie details.</p>";
     }
@@ -68,136 +83,95 @@ if ($movie_id) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Movies</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Savoy</title>
     <link rel="icon" href="../Images/favicon.png" type="image/png" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <style>
-        .radio-btn-group input[type="radio"] {
-            display: none;
-        }
-
-        .radio-btn-group label {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 5px;
-            border: 1px solid #007bff;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: #f8f9fa;
-            color: #007bff;
-        }
-
-        .radio-btn-group input[type="radio"]:checked+label {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .showtime-list {
-            display: none;
-        }
-
-        .showtime-list input[type="radio"] {
-            display: none;
-        }
-
-        .showtime-list label {
-            display: inline-block;
-            padding: 5px 10px;
-            margin: 3px;
-            border: 1px solid #28a745;
-            border-radius: 3px;
-            cursor: pointer;
-            background-color: #e9ecef;
-            color: #28a745;
-        }
-
-        .showtime-list input[type="radio"]:checked+label {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .seat {
-            width: 30px;
-            height: 30px;
-            margin: 3px;
-            background-color: #ccc;
-            text-align: center;
-            line-height: 30px;
-            cursor: pointer;
-        }
-
-        .selected {
-            background-color: blue;
-            color: white;
-        }
-
-        .row {
-            display: flex;
-            justify-content: center;
-        }
-
-        .modal-content {
-            padding: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/book.css">
 </head>
 
-<body>
-    <nav class="booking_head_nav">
-        <a href=""><i class="fa-solid fa-circle-chevron-left" style="color: #ffffff; font-size: 1.5rem;"></i></a>
-        <form method="post" id="movieSelectForm">
-            <div class="form-group">
-                <select class="form-control" id="movieSelect" name="movie"
-                    onchange="document.getElementById('movieSelectForm').submit();">
-                    <option value="">--Select Movie--</option>
-                    <?php foreach ($all_movies as $movie_option): ?>
-                        <option value="<?php echo htmlspecialchars($movie_option['movie_id']); ?>" <?php echo ($movie_option['movie_id'] == $movie_id) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($movie_option['movie_title']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+<body style="background-image: url('<?php echo $imageURL; ?>');">
+    <div id="movieBackground" style="background: inherit;" class="movie_booking_page">
+    </div>
+    <div class="black_overlay"></div>
+    <nav class="contents">
+        <div class="top_nav">
+            <a href="../index.php"><i class="fa-solid fa-circle-chevron-left"
+                    style="color: #ffffff; font-size: 1.5rem;"></i></a>
+            <h4>Show Times</h4>
+        </div>
+        <div class="bottom_nav">
+            <form method="post" id="movieSelectForm">
+                <div class="form-group">
+                    <select class="form-control movie_selection" id="movieSelect" name="movie"
+                        onchange="document.getElementById('movieSelectForm').submit();">
+                        <?php foreach ($all_movies as $movie_option): ?>
+                            <option value="<?php echo htmlspecialchars($movie_option['movie_id']); ?>" <?php echo ($movie_option['movie_id'] == $movie_id) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($movie_option['movie_title']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </form>
+            <div class="bottom_nav_border">
+                <a href="#"> <i class="fa-solid fa-location-dot" style="color: #ffffff;"></i> &nbsp Location</a>
             </div>
-        </form>
+            <div class="center">
+                <a href="#"><i class="fa-solid fa-martini-glass-citrus" style="color: #ffffff;"></i> &nbsp Snack &
+                    Drinks</a>
+            </div>
+        </div>
     </nav>
     <?php if ($selected_movie): ?>
-        <div class="movie">
-            <h3><?php echo htmlspecialchars($selected_movie['movie_title']); ?></h3>
-            <p>Duration: <?php echo htmlspecialchars($selected_movie['duration']); ?></p>
+        <div class="movie contents">
+            <h1><?php echo htmlspecialchars($selected_movie['movie_title']); ?></h1>
+            <h5>Duration: <?php echo htmlspecialchars($selected_movie['duration']); ?></h5>
+            <br>
             <p><?php echo htmlspecialchars($selected_movie['storyplot']); ?></p>
-
-            <?php if (!empty($selected_movie['showtimes'])): ?>
-                <h4>Select Date:</h4>
-                <div class="radio-btn-group">
-                    <?php foreach ($selected_movie['showtimes'] as $date => $showtimes): ?>
-                        <input type="radio" id="date_<?php echo htmlspecialchars($date); ?>" name="showdate"
-                            value="<?php echo htmlspecialchars($date); ?>"
-                            onclick="showShowtimes('<?php echo htmlspecialchars($date); ?>')">
-                        <label for="date_<?php echo htmlspecialchars($date); ?>"><?php echo htmlspecialchars($date); ?></label>
-                    <?php endforeach; ?>
-                </div>
-                <div class="showtimes">
-                    <?php foreach ($selected_movie['showtimes'] as $date => $showtimes): ?>
-                        <ul id="showtimes_<?php echo htmlspecialchars($date); ?>" class="showtime-list">
-                            <?php foreach ($showtimes as $time): ?>
-                                <input type="radio" id="time_<?php echo htmlspecialchars($date . '_' . $time); ?>" name="showtime"
-                                    value="<?php echo htmlspecialchars($time); ?>"
-                                    onclick="setSelectedShowtime('<?php echo htmlspecialchars($time); ?>')">
+            <br>
+            <div class="movie_bg">
+                <?php if (!empty($selected_movie['showtimes'])): ?>
+                    <h4>Show Available Dates</h4>
+                    <div class="radio-btn-group">
+                        <?php foreach ($selected_movie['showtimes'] as $date => $showtimes): ?>
+                            <div class="ticket">
+                                <input type="radio" id="date_<?php echo htmlspecialchars($date); ?>" name="showdate"
+                                    value="<?php echo htmlspecialchars($date); ?>"
+                                    onclick="showShowtimes('<?php echo htmlspecialchars($date); ?>')">
+                                <img src="../Images/ticket.png" alt="">
                                 <label
-                                    for="time_<?php echo htmlspecialchars($date . '_' . $time); ?>"><?php echo htmlspecialchars($time); ?></label>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php endforeach; ?>
+                                    for="date_<?php echo htmlspecialchars($date); ?>"><?php echo htmlspecialchars($date); ?></label>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="showtimes">
+
+                        <?php foreach ($selected_movie['showtimes'] as $date => $showtimes): ?>
+                            <ul id="showtimes_<?php echo htmlspecialchars($date); ?>" class="showtime-list">
+                                <?php foreach ($showtimes as $time): ?>
+                                    <h5>Time:</h5>
+                                    <input type="radio" id="time_<?php echo htmlspecialchars($date . '_' . $time); ?>" name="showtime"
+                                        value="<?php echo htmlspecialchars($time); ?>"
+                                        onclick="setSelectedShowtime('<?php echo htmlspecialchars($time); ?>')">
+                                    <label for="time_<?php echo htmlspecialchars($date . '_' . $time); ?>"><i
+                                            class="fa-regular fa-clock" style="margin-right: 3px;"></i>
+                                        <?php echo htmlspecialchars($time); ?></label>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="adults">Number of Adults:</label>
-                    <input type="number" id="adults" class="form-control" min="0" value="0" onchange="validateTotal()">
-                </div>
-                <div class="form-group">
-                    <label for="children">Number of Children:</label>
-                    <input type="number" id="children" class="form-control" min="0" value="0" onchange="validateTotal()">
+                <div class="count">
+                    <div class="form-group">
+                        <label for="adults">Number of Adults:</label>
+                        <input type="number" id="adults" class="form-control" min="0" value="0" onchange="validateTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label for="children">Number of Children:</label>
+                        <input type="number" id="children" class="form-control" min="0" value="0" onchange="validateTotal()">
+                    </div>
                 </div>
                 <div id="normalSeats">
                     <h3>Normal Seats</h3>
@@ -277,6 +251,7 @@ if ($movie_id) {
             const showtimeLists = document.querySelectorAll('.showtime-list');
             showtimeLists.forEach(list => {
                 list.style.display = 'none';
+                list.style.padding = '1rem 0 0 0';
             });
             const selectedList = document.getElementById('showtimes_' + date);
             if (selectedList) {
@@ -302,14 +277,14 @@ if ($movie_id) {
         }
 
         $(document).ready(function () {
-            function createSeats(section, count) {
+            function createSeats(section, count, prefix) {
                 let rows = Math.ceil(count / 20);
                 let seatNumber = 1;
                 for (let i = 0; i < rows; i++) {
                     let row = $('<div class="row"></div>');
                     for (let j = 0; j < 20 && seatNumber <= count; j++) {
-                        let seat = $('<div class="seat"></div>').text(seatNumber);
-                        seat.attr('data-seat-number', seatNumber);
+                        let seat = $('<div class="seat"></div>').text(prefix + seatNumber);
+                        seat.attr('data-seat-number', prefix + seatNumber);
                         row.append(seat);
                         seatNumber++;
                     }
@@ -317,17 +292,18 @@ if ($movie_id) {
                 }
             }
 
-            createSeats($('#normalSeats'), 150);
-            createSeats($('#odcSeats'), 150);
-            createSeats($('#balconySeats'), 200);
+            createSeats($('#normalSeats'), 150, 'A');
+            createSeats($('#odcSeats'), 150, 'B');
+            createSeats($('#balconySeats'), 200, 'C');
 
             $('.seat').on('click', function () {
+                const seatNumber = $(this).attr('data-seat-number');
                 if (!$(this).hasClass('selected') && selectedSeats.length < totalSeats) {
                     $(this).addClass('selected');
-                    selectedSeats.push(parseInt($(this).text()));
+                    selectedSeats.push(seatNumber);
                 } else if ($(this).hasClass('selected')) {
                     $(this).removeClass('selected');
-                    selectedSeats = selectedSeats.filter(seat => seat !== parseInt($(this).text()));
+                    selectedSeats = selectedSeats.filter(seat => seat !== seatNumber);
                 }
             });
 
@@ -337,7 +313,7 @@ if ($movie_id) {
                     selectedSeats = selectedSeats.slice(0, totalSeats);
                     $('.seat').removeClass('selected');
                     selectedSeats.forEach(seat => {
-                        $(`.seat:contains(${seat})`).addClass('selected');
+                        $(`.seat[data-seat-number="${seat}"]`).addClass('selected');
                     });
                 }
             });

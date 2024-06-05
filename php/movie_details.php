@@ -59,7 +59,7 @@
                     <h4><span>Duration :</span> <?php echo htmlspecialchars($row["duration"]); ?></h4>
                     </div>
                     <div class="right">
-                    <a href="booking.php">Buy Tickets</a>
+                    <a href="booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]);?>">Buy Tickets</a>
                     </div>
                 </div>
             </nav>
@@ -73,7 +73,7 @@
                             <div class="movie_detail">
                                 <h1 class="with_language"><?php echo htmlspecialchars($row["movie_title"]); ?></h1>
                                 <h3>Language - <?php echo htmlspecialchars($row["language"]); ?></h3>
-                                <a href="<?php $_SESSION['movie'] = $movie_id;?>booking.php">Buy Tickets</a>
+                                <a href="booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]);?>">Buy Tickets</a>
                                 <a href="<?php echo htmlspecialchars($row["movie_trailer"]); ?>" class="border_btn">Watch
                                     Trailer</a>
                             </div>
