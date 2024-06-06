@@ -1,15 +1,3 @@
-<?php
-session_start();
-require 'db_connection.php';
-
-
-if (isset($_SESSION['alert_message'])) {
-    echo "<div class='alert alert-danger mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
-    unset($_SESSION['alert_message']);
-}
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,7 +31,17 @@ if (isset($_SESSION['alert_message'])) {
             <a href="forgot_password.php" class="btn btn-secondary">Forgot Password</a>
             <a href="../index.php" class="btn btn-secondary">Back</a>
         </div>
+
         <?php
+        session_start();
+        require 'db_connection.php';
+
+
+        if (isset($_SESSION['alert_message'])) {
+            echo "<div class='alert alert-danger mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
+            unset($_SESSION['alert_message']);
+        }
+
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $username = $_POST['username'];

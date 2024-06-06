@@ -1,7 +1,11 @@
 <?php
 session_start();
 require 'db_connection.php';
-
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['alert_message'] = "You have to login to book!";
+    $_SESSION['booking'] = true;
+    header("Location: login.php");
+}
 function getMovies($db)
 {
     $sql = "SELECT movie_id, movie_title FROM movies where current_movies = 1";
@@ -89,7 +93,7 @@ if (!$movie_id) {
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/book.css">
+    <link rel="stylesheet" href="../css/booking.css">
 </head>
 
 <body style="background-image: url('<?php echo $imageURL; ?>');">
@@ -245,6 +249,7 @@ if (!$movie_id) {
     <script>
         let selectedShowtime = null;
         let selectedSeats = [];
+        let bookedSeats = [];
         let totalSeats = 0;
 
         function showShowtimes(date) {
@@ -296,16 +301,24 @@ if (!$movie_id) {
             createSeats($('#odcSeats'), 150, 'B');
             createSeats($('#balconySeats'), 200, 'C');
 
-            $('.seat').on('click', function () {
-                const seatNumber = $(this).attr('data-seat-number');
-                if (!$(this).hasClass('selected') && selectedSeats.length < totalSeats) {
-                    $(this).addClass('selected');
-                    selectedSeats.push(seatNumber);
-                } else if ($(this).hasClass('selected')) {
-                    $(this).removeClass('selected');
-                    selectedSeats = selectedSeats.filter(seat => seat !== seatNumber);
-                }
-            });
+            function updateBookedSeats(bookedSeats) {
+                $('.seat').each(function () {
+                    const seatNumber = $(this).attr('data-seat-number');
+                    if (bookedSeats.includes(seatNumber)) {
+                        $(this).addClass('booked').off('click');
+                    } else {
+                        $('.seat').on('click', function () {
+                            if (!$(this).hasClass('selected') && selectedSeats.length < totalSeats) {
+                                $(this).addClass('selected');
+                                selectedSeats.push(parseInt($(this).text()));
+                            } else if ($(this).hasClass('selected')) {
+                                $(this).removeClass('selected');
+                                selectedSeats = selectedSeats.filter(seat => seat !== parseInt($(this).text()));
+                            }
+                        });
+                    }
+                });
+            }
 
             $('#adults, #children').on('input', function () {
                 totalSeats = parseInt($('#adults').val()) + parseInt($('#children').val());
@@ -313,10 +326,82 @@ if (!$movie_id) {
                     selectedSeats = selectedSeats.slice(0, totalSeats);
                     $('.seat').removeClass('selected');
                     selectedSeats.forEach(seat => {
-                        $(`.seat[data-seat-number="${seat}"]`).addClass('selected');
+                        $(`.seat:contains(${seat})`).addClass('selected');
                     });
                 }
             });
+
+            function fetchBookedSeats(date, time) {
+                $.ajax({
+                    url: 'getBookedSeats.php',
+                    type: 'POST',
+                    data: {
+                        date: date,
+                        time: time
+                    },
+                    success: function (response) {
+                        bookedSeats = JSON.parse(response);
+                        updateBookedSeats(bookedSeats);
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error fetching booked seats: ' + error);
+                    }
+                });
+            }
+
+            $('#movieSelect').on('change', function () {
+                const date = $('input[name="showdate"]:checked').val();
+                const time = $('input[name="showtime"]:checked').val();
+                fetchBookedSeats(date, time);
+            });
+
+            $('input[name="showdate"], input[name="showtime"]').on('change', function () {
+                const date = $('input[name="showdate"]:checked').val();
+                const time = $('input[name="showtime"]:checked').val();
+                fetchBookedSeats(date, time);
+            });
+
+            function fetchBookedSeats(date, time) {
+                $.ajax({
+                    url: 'getBookedSeats.php',
+                    type: 'POST',
+                    data: {
+                        date: date,
+                        time: time
+                    },
+                    success: function (response) {
+                        bookedSeats = JSON.parse(response);
+                        updateBookedSeats();
+                        // console.log('Working');
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error fetching booked seats: ' + error);
+                    }
+                });
+            }
+
+            function updateBookedSeats() {
+                $('.seat').each(function () {
+                    const seatNumber = $(this).attr('data-seat-number');
+                    if (bookedSeats.includes(seatNumber)) {
+                        $(this).addClass('booked');
+                        // console.log('done');
+                        $(this).off('click');
+                    } else {
+                        $(this).removeClass('booked');
+                        $(this).on('click', function () {
+                            const seatNumber = $(this).attr('data-seat-number');
+                            if (!$(this).hasClass('selected') && selectedSeats.length < totalSeats) {
+                                $(this).addClass('selected');
+                                selectedSeats.push(seatNumber);
+                            } else if ($(this).hasClass('selected')) {
+                                $(this).removeClass('selected');
+                                selectedSeats = selectedSeats.filter(seat => seat !== seatNumber);
+                            }
+                        });
+                    }
+                });
+            }
         });
 
 

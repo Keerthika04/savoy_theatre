@@ -254,6 +254,12 @@ body {
   color: white;
 }
 
+.booked {
+    background-color: #ff4d4d;
+    cursor: not-allowed;
+}
+
+
 .row {
   display: flex;
   justify-content: center;
