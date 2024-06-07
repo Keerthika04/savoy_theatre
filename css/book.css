@@ -25,7 +25,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.60);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 1;
 }
 
@@ -66,7 +66,6 @@ body {
   border-bottom: 1.5px solid rgba(255, 255, 255, 0.45);
 }
 
-
 .bottom_nav form .form-group {
   margin: 0;
 }
@@ -94,7 +93,7 @@ body {
   border-right: 1px solid rgba(255, 255, 255, 0.45);
 }
 
-.center{
+.center {
   display: flex;
   align-items: center;
 }
@@ -107,7 +106,7 @@ body {
 }
 
 /* Ticket */
-.movie_bg{
+.movie_bg {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -124,12 +123,12 @@ body {
   z-index: -1;
 }
 
-.radio-btn-group{
+.radio-btn-group {
   margin-top: 1rem;
   display: flex;
   flex-wrap: wrap;
 }
-.ticket{
+.ticket {
   display: flex;
   flex-direction: column;
   position: relative;
@@ -140,7 +139,7 @@ body {
   max-width: 150px;
 }
 
-.ticket img{
+.ticket img {
   position: absolute;
   z-index: -1;
   height: 4rem;
@@ -168,11 +167,8 @@ body {
 }
 
 /* Time */
-.showtimes{
 
-}
-
-.showtimes h5{
+.showtimes h5 {
   display: inline-block;
   margin-right: 0.5rem;
 }
@@ -204,67 +200,179 @@ body {
   color: var(--darkBg);
 }
 
-.showtime-list  label > i{
- color: #ffffff;
+.showtime-list label > i {
+  color: #ffffff;
 }
 
-.showtime-list input[type="radio"]:checked +  label > i {
+.showtime-list input[type="radio"]:checked + label > i {
   color: var(--darkBg);
 }
 
+/* Count */
 .count,
-.count .form-group{
+.parking,
+.count .form-group,
+.parking .form-group {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
 }
 
-.count{
+.count,
+pa {
   margin: 0 auto;
   margin: 2rem 0;
 }
 
-.count .form-group{
+.count .form-group {
   padding: 1rem;
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.35);
 }
 
-.count .form-group input{
+.count .form-group input {
   width: 5rem;
 }
 
-.count .form-group label{
-  margin: 0 ;
+.count .form-group label {
+  margin: 0;
+}
+
+/* Seats */
+.seat,
+.selected {
+  background-image: url(../Images/chair1.png);
+  background-size: cover;
 }
 
 .seat {
-  width: 30px;
-  height: 30px;
-  margin: 3px;
-  background-color: #ccc;
+  width: 45px;
+  height: 45px;
+  margin: 5px;
   text-align: center;
   line-height: 30px;
   cursor: pointer;
 }
 
 .selected {
-  background-color: blue;
+  filter: hue-rotate(145deg);
   color: white;
 }
 
 .booked {
-    background-color: #ff4d4d;
-    cursor: not-allowed;
+  background-image: url(../Images/folded_chair.png);
+  filter: brightness(0.7);
+  cursor: not-allowed;
 }
 
+#normalSeats h3,
+#odcSeats h3,
+#balconySeats h3 {
+  margin: 3rem 0 2rem 0;
+}
 
 .row {
   display: flex;
   justify-content: center;
 }
 
+/* Parking */
+.parking {
+  margin: 2rem 10rem;
+  padding: 1rem;
+}
+
+.parking label {
+  margin-bottom: 0;
+}
+
+.parking .form-group {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.parking .form-control:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.parking .form-control {
+  border-radius: 10px;
+}
+
+.parking .form-control:focus  {
+  border-radius: 10px 10px 0 0;
+}
+
+/* BookingBtn */
+.bookingBtn {
+  color: var(--darkBg);
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5em;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-family: sans-serif;
+  letter-spacing: 0.1em;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: 0.5s;
+  margin: 1em;
+  background-color: var(--white);
+  cursor: pointer;
+}
+
+.bookingBtn span {
+  position: absolute;
+  width: 25%;
+  height: 100%;
+  background-color: rgb(226, 255, 192);
+  transform: translateY(150%);
+  border-radius: 50%;
+  left: calc((var(--n) - 1) * 25%);
+  transition: 0.5s;
+  transition-delay: calc((var(--n) - 1) * 0.1s);
+  z-index: -1;
+}
+
+.bookingBtn:hover {
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.bookingBtn:hover span {
+  transform: translateY(0) scale(2);
+}
+
+.bookingBtn span:nth-child(1) {
+  --n: 1;
+}
+
+.bookingBtn span:nth-child(2) {
+  --n: 2;
+}
+
+.bookingBtn span:nth-child(3) {
+  --n: 3;
+}
+
+.bookingBtn span:nth-child(4) {
+  --n: 4;
+}
+
+/* Pay Modal */
 .modal-content {
+  background-color: var(--darkBg);
+  font-family: Arial, Helvetica, sans-serif;
+  box-shadow: 2px 2px 6px 0 rgba(255, 255, 255, 0.8);
+  text-align: left;
   padding: 20px;
+}
+
+.modal-dialog {
+  border: 3px solid var(--lightGreenBlue);
+  border-radius: 8px;
 }

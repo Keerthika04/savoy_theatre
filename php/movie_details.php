@@ -1,3 +1,18 @@
+<?php
+session_start();
+require 'db_connection.php';
+
+if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
+  if (isset($_SESSION['user_id'])) {
+    header("Location: user_profile.php");
+    exit();
+  } else {
+    header("Location: login.php");
+    exit();
+  }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +21,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Savoy</title>
     <link rel="icon" href="../Images/favicon.png" type="image/png" />
-    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/movie_detail.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -37,11 +53,10 @@
                 <div class="menu_icon" onclick="toggleMenu()">
                     <i class="fas fa-bars"></i>
                 </div>
+                <a href="?action=check_session"><i class="fa-solid fa-user user_profile"></i></a>
             </div>
         </div>
         <?php
-        session_start();
-        require 'db_connection.php';
 
         $_SESSION['movie_id'] = $_GET['movie'];
 

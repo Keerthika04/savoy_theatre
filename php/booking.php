@@ -92,8 +92,8 @@ if (!$movie_id) {
     <link rel="icon" href="../Images/favicon.png" type="image/png" />
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/booking.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/book.css">
 </head>
 
 <body style="background-image: url('<?php echo $imageURL; ?>');">
@@ -178,26 +178,32 @@ if (!$movie_id) {
                     </div>
                 </div>
                 <div id="normalSeats">
-                    <h3>Normal Seats</h3>
+                    <h3> - Normal Seats - </h3>
                 </div>
                 <div id="odcSeats">
-                    <h3>ODC Seats</h3>
+                    <h3>- ODC Seats -</h3>
                 </div>
                 <div id="balconySeats">
-                    <h3>Balcony Seats</h3>
+                    <h3>- Balcony Seats -</h3>
                 </div>
 
-                <div class="form-group">
-                    <label for="parking">Parking Needed:</label>
-                    <select id="parking" class="form-control">
-                        <option value="No Parking">No Parking</option>
-                        <option value="Motorbike">Motorbike</option>
-                        <option value="Car">Car</option>
-                        <option value="Minivan">Minivan</option>
-                    </select>
+                <div class="parking">
+                    <div class="form-group">
+                        <select id="parking" class="form-control">
+                            <option value="No Parking">No Parking</option>
+                            <option value="Motorbike">Motorbike</option>
+                            <option value="Car">Car</option>
+                            <option value="Minivan">Minivan</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="mt-3">
-                    <button class="btn btn-primary" id="bookButton" onclick="bookShowtime()">Book Showtime</button>
+                    <button class="btn btn-light bookingBtn" id="bookButton" onclick="bookShowtime()">Book Now
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
                 </div>
             <?php else: ?>
                 <p>No showtimes available for this movie.</p>
@@ -211,9 +217,6 @@ if (!$movie_id) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="bookingModalLabel">Booking Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body">
                     <p><strong>Movie:</strong> <span id="modalMovie"></span></p>
@@ -224,20 +227,10 @@ if (!$movie_id) {
                     <p><strong>Children:</strong> <span id="modalChildren"></span></p>
                     <p><strong>Parking:</strong> <span id="modalParking"></span></p>
                     <p><strong>Total Price:</strong> Rs.<span id="modalTotalPrice"> /-</span></p>
-                    <form id="bookingForm">
-                        <div class="form-group">
-                            <label for="name">Name:</label>
-                            <input type="text" id="name" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="mobile">Mobile Number:</label>
-                            <input type="text" id="mobile" class="form-control" required>
-                        </div>
-                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="payNow">Pay Now</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-light" id="payNow">Pay Now</button>
                 </div>
             </div>
         </div>
@@ -283,11 +276,11 @@ if (!$movie_id) {
 
         $(document).ready(function () {
             function createSeats(section, count, prefix) {
-                let rows = Math.ceil(count / 20);
+                let rows = Math.ceil(count / 15);
                 let seatNumber = 1;
                 for (let i = 0; i < rows; i++) {
                     let row = $('<div class="row"></div>');
-                    for (let j = 0; j < 20 && seatNumber <= count; j++) {
+                    for (let j = 0; j < 15 && seatNumber <= count; j++) {
                         let seat = $('<div class="seat"></div>').text(prefix + seatNumber);
                         seat.attr('data-seat-number', prefix + seatNumber);
                         row.append(seat);
