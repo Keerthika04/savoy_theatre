@@ -236,7 +236,219 @@ body {
   opacity: 1;
 }
 
+/* movies */
+.movies_slider .container {
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+  padding: 4rem 0;
+}
 
+.upcoming_movie_slider .container{
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+  padding: 4rem 0;
+}
+
+.blurry-bg,.blurry-bg2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  filter: blur(10px);
+  z-index: -1;
+}
+
+.black_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  filter: blur(10px);
+  z-index: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+.tranding-slider {
+  width: 100%;
+  padding: 2rem 0;
+  position: relative;
+  color: var(--white);
+  text-align: center;
+}
+
+.tranding-slider h1{
+  font-size: 3rem;
+  margin: 0 0 2rem 0;
+}
+
+.movies_slider::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: -10;
+}
+
+.tranding-slide img {
+  width: 100%;
+  height: 35rem;
+  border: 2rem 2rem 0 0;
+  object-fit: cover;
+}
+
+.tranding-slide .tranding-slide-content {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.tranding-slide-content .tranding-slide-content-bottom {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  color: var(--white);
+}
+
+.movie-info h2{
+  margin-bottom: 0;
+}
+
+.movie-info p{
+  margin-top: 4px;
+}
+
+.buy-tickets {
+  display: inline-block;
+  color: var(--darkBg);
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 0.5em;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-family: sans-serif;
+  letter-spacing: 0.1em;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: 0.5s;
+  background-color: var(--white);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.buy-tickets span {
+  position: absolute;
+  width: 25%;
+  height: 100%;
+  background-color: var(--lightGreenBlue);
+  transform: translateY(150%);
+  border-radius: 50%;
+  left: calc((var(--n) - 1) * 25%);
+  transition: 0.5s;
+  transition-delay: calc((var(--n) - 1) * 0.1s);
+  z-index: -1;
+}
+
+.buy-tickets:hover {
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.buy-tickets:hover span {
+  transform: translateY(0) scale(2);
+}
+
+.buy-tickets span:nth-child(1) {
+  --n: 1;
+}
+
+.buy-tickets span:nth-child(2) {
+  --n: 2;
+}
+
+.buy-tickets span:nth-child(3) {
+  --n: 3;
+}
+
+.buy-tickets span:nth-child(4) {
+  --n: 4;
+}
+
+/* Links & Footer */
+.links {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 4rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: var(--white);
+}
+
+.column {
+  width: 20%;
+  margin-right: 20px;
+}
+
+.column:last-child {
+  margin-right: 0;
+}
+
+.column ul{
+  list-style: none;
+  padding: 0;
+}
+
+.column ul li{
+  padding-bottom: 5px;
+  cursor: pointer;
+}
+
+.column ul li:hover{
+  color:var(--lightGreenBlue);
+}
+
+.column h2{
+  font-size: 2rem;
+}
+
+.footer {
+  background-color: var(--darkBg);
+  color: var(--white);
+  padding: 10px 0;
+  text-align: center;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.logo {
+  color: var(--lightGreenBlue);
+  font-size: 24px;
+  font-weight: bold;
+}
 
 @media (max-width: 768px) {
   .nav_links {

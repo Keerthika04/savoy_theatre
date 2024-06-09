@@ -74,6 +74,10 @@
     margin-top: 0.8rem;
     margin-bottom: 3.5rem;
   }
+
+  .movie_poster {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
   
   .movie_details .about_movie,
   .about_cast {
