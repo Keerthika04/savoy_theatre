@@ -12,6 +12,39 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
     }
 }
 
+$_SESSION['movie_id'] = $_GET['movie'];
+
+$movie_id = $_SESSION['movie_id'];
+
+$query = $db->query("SELECT feedback_id FROM movie_feedbacks ORDER BY feedback_id DESC LIMIT 1");
+$newID = "f0001";
+
+if ($query->num_rows > 0) {
+    $row = $query->fetch_assoc();
+    $last_id = $row['feedback_id'];
+    $num = (int) substr($last_id, 1) + 1;
+    $newID = "f" . str_pad($num, 4, "0", STR_PAD_LEFT);
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_feedback'])) {
+
+    if (!isset($_SESSION['user_id'])) {
+        $_SESSION['alert_message'] = "You have to login to add Feedback!";
+        header("Location: login.php");
+        exit();
+    }
+
+    $feedback = htmlspecialchars($_POST['feedback']);
+
+    $stmt = $db->prepare("INSERT INTO movie_feedbacks (feedback_id, movie_id, user_id, feedbacks) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $newID, $_SESSION['movie_id'], $_SESSION['user_id'], $feedback);
+    $stmt->execute();
+    $stmt->close();
+
+    header("Location: {$_SERVER['REQUEST_URI']}");
+    exit();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,6 +62,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
 </head>
 
 <body>
+    <!-- Header -->
     <nav class="header" id="navbar">
         <div class="sub_navbar flex_align_center">
             <div class="left_nav">
@@ -52,11 +86,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
                 <a href="?action=check_session"><i class="fa-solid fa-user user_profile"></i></a>
             </div>
         </div>
+        <!-- Hiddle 2nd Nav -->
         <?php
-
-        $_SESSION['movie_id'] = $_GET['movie'];
-
-        $movie_id = $_SESSION['movie_id'];
 
         $query = $db->query("SELECT * FROM movies Where movie_id = '$movie_id'");
 
@@ -64,8 +95,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
             while ($row = $query->fetch_assoc()) {
                 $imageURL = '../uploaded_movie_posters/' . $row["movie_poster"];
 
-                if ($row["upcoming_movies"] == 0):
-                    ?>
+                if ($row["upcoming_movies"] == 0) :
+        ?>
                     <div class="nav_movie" id="nav_movie">
                         <div class="left">
                             <h2><?php echo htmlspecialchars($row["movie_title"]); ?></h2>
@@ -76,67 +107,100 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
                         </div>
                     </div>
                 <?php endif; ?>
-            </nav>
+    </nav>
 
-            <section class="banner">
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide movie_poster">
-                            <div class="black_overlay"></div>
-                            <img src="<?php echo $imageURL; ?>" alt="" />
-                            <div class="movie_detail">
-                                <h1 class="with_language"><?php echo htmlspecialchars($row["movie_title"]); ?></h1>
-                                <h3>Language - <?php echo htmlspecialchars($row["language"]); ?></h3>
+    <!-- Banner -->
+    <section class="banner">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide movie_poster">
+                    <div class="black_overlay"></div>
+                    <img src="<?php echo $imageURL; ?>" alt="" />
+                    <div class="banner_text">
+                        <h1 class="with_language"><?php echo htmlspecialchars($row["movie_title"]); ?></h1>
+                        <h3>Language - <?php echo htmlspecialchars($row["language"]); ?></h3>
 
-                                <?php if ($row["upcoming_movies"] == 0): ?>
-                                    <a href="booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>">Buy Tickets</a>
-                                <?php endif; ?>
+                        <?php if ($row["upcoming_movies"] == 0) : ?>
+                            <a href="booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>">Buy Tickets</a>
+                        <?php endif; ?>
 
-                                <a href="<?php echo htmlspecialchars($row["movie_trailer"]); ?>" class="border_btn">Watch
-                                    Trailer</a>
-                            </div>
-                        </div>
-
+                        <a href="<?php echo htmlspecialchars($row["movie_trailer"]); ?>" class="border_btn">Watch
+                            Trailer</a>
                     </div>
                 </div>
-            </section>
-            <section class="movie_details">
-                <div class="about_movie">
-                    <div class="left">
-                        <h1><span>Duration :</span> <?php echo htmlspecialchars($row["duration"]); ?></h1>
-                        <h1><span>Released on :</span> <?php echo htmlspecialchars($row["released_date"]); ?></h1>
-                        <h1><?php echo htmlspecialchars($row["genre"]); ?></h1>
-                    </div>
-                    <div class="right">
-                        <p><?php echo htmlspecialchars($row["storyplot"]); ?></p>
-                    </div>
-                </div>
-                <div class="about_cast">
-                    <div class="left">
-                        <h1>Cast & Crew</h1>
-                    </div>
-                    <div class="right">
-                        <?php
-                        $sqlData = $row["movie_cast"];
-                        $sqlData = preg_replace('/\s*,\s*/', ',', trim($sqlData));
-                        $items = explode(',', $sqlData);
 
-                        foreach ($items as $item) {
-                            preg_match('/(.*?)(\s*\[.*\])/', $item, $matches);
-                            $name = $matches[1];
-                            $role = $matches[2];
+            </div>
+        </div>
+    </section>
 
-                            echo "<h1>" . htmlspecialchars($name) . "<span> &nbsp" . htmlspecialchars($role) . "</span></h1>";
-                        }
-                        ?>
-                    </div>
-                </div>
-            </section>
+    <!-- Movie Details -->
+    <section class="movie_details">
+        <div class="about_movie">
+            <div class="left">
+                <h1><span>Duration :</span> <?php echo htmlspecialchars($row["duration"]); ?></h1>
+                <h1><span>Released on :</span> <?php echo htmlspecialchars($row["released_date"]); ?></h1>
+                <h1><?php echo htmlspecialchars($row["genre"]); ?></h1>
+            </div>
+            <div class="right">
+                <p><?php echo htmlspecialchars($row["storyplot"]); ?></p>
+            </div>
+        </div>
+        <div class="about_cast">
+            <div class="left">
+                <h1>Cast & Crew</h1>
+            </div>
+            <div class="right">
+                <?php
+                $sqlData = $row["movie_cast"];
+                $sqlData = preg_replace('/\s*,\s*/', ',', trim($sqlData));
+                $items = explode(',', $sqlData);
 
-        <?php }
+                foreach ($items as $item) {
+                    preg_match('/(.*?)(\s*\[.*\])/', $item, $matches);
+                    $name = $matches[1];
+                    $role = $matches[2];
+
+                    echo "<h1>" . htmlspecialchars($name) . "<span> &nbsp" . htmlspecialchars($role) . "</span></h1>";
+                }
+                ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feedback section -->
+    <section class="feedback_section" id="feedback">
+        <div class="feedback_form">
+            <h2>Add Your Feedback</h2>
+            <form method="post" action="">
+                <input name="feedback" placeholder="Write your feedback here..." required></textarea>
+                <button type="submit" name="submit_feedback">Submit Feedback</button>
+            </form>
+        </div>
+
+        <div class="user_feedbacks">
+            <h2>User Feedbacks</h2>
+            <?php
+                $movie_id = $_SESSION['movie_id'];
+                $feedback_query = $db->query("SELECT mf.feedbacks, users.last_name, users.first_name FROM movie_feedbacks mf JOIN 
+            users ON mf.user_id = users.user_id  WHERE movie_id = '$movie_id' ORDER BY mf.feedback_id DESC");
+                if ($feedback_query->num_rows > 0) {
+                    while ($feedback_row = $feedback_query->fetch_assoc()) {
+            ?>
+                    <p><span><?php echo htmlspecialchars($feedback_row["first_name"] . " " . $feedback_row["last_name"] . " : ") ?> </span><br><?php echo htmlspecialchars( $feedback_row['feedbacks']); ?></p>
+            <?php
+                    }
+                } else {
+                    echo "<p>No feedbacks yet.</p>";
+                }
+            ?>
+        </div>
+    </section>
+
+<?php }
         } ?>
 
 </body>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script src="../js/script.js"></script>
+
 </html>

@@ -15,8 +15,7 @@
 <body>
     <div class="login-container">
         <div class="login-box">
-            <a href="../index.php" class="backBtn"><i class="fa-solid fa-circle-chevron-left"
-                    style="color: #ffffff; font-size: 1.5rem;"></i></a>
+            <a href="../index.php" class="backBtn"><i class="fa-solid fa-circle-chevron-left" style="color: #ffffff; font-size: 1.5rem;"></i></a>
             <h2 class="login-title">Login</h2>
             <form id="loginForm" action="login.php" method="post">
                 <div class="form-group">
@@ -39,13 +38,15 @@
                     <span></span>
                     <span></span>Login</button>
             </form>
-            <p class="register-link">Don't have an account? <a href="register.php"
-                    class="register-link-text">Register</a></p>
+            <p class="register-link">Don't have an account? <a href="register.php" class="register-link-text">Register</a></p>
 
             <?php
             session_start();
             require 'db_connection.php';
 
+            if (!empty($_SESSION['movie_id'])) {
+                $movie_id = $_SESSION['movie_id'];
+            }
 
             if (isset($_SESSION['alert_message'])) {
                 echo "<div class='alert alert-danger mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
@@ -74,12 +75,21 @@
                                 $_SESSION['user_id'] = $user_id;
                                 $_SESSION['username'] = $username;
 
-                                if ($_SESSION['booking'] == true) {
-                                    header("Location: booking.php");
-                                    exit();
+                                if (!empty($movie_id)) {
+                                    if (isset($_SESSION['booking']) && $_SESSION['booking'] == true) {
+                                        header("Location: booking.php?movie=$movie_id");
+                                        exit();
+                                    } else {
+                                        header("Location: movie_details.php?movie=$movie_id");
+                                    }
                                 } else {
-                                    header("Location: ../index.php");
-                                    exit();
+                                    if (isset($_SESSION['booking']) && $_SESSION['booking'] == true) {
+                                        header("Location: booking.php");
+                                        exit();
+                                    } else {
+                                        header("Location: ../index.php");
+                                        exit();
+                                    }
                                 }
                             } else {
                                 echo "<div class='alert alert-danger text-center mt-3'>The password you entered is not valid!</div>";
@@ -100,7 +110,7 @@
     </div>
 </body>
 <script>
-    document.getElementById('togglePassword').addEventListener('click', function () {
+    document.getElementById('togglePassword').addEventListener('click', function() {
         const passwordField = document.getElementById('password');
         const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordField.setAttribute('type', type);

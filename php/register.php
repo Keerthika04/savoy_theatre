@@ -105,7 +105,7 @@
                         $row = $query->fetch_assoc();
                         $last_id = $row['user_id'];
                         $num = (int) substr($last_id, 1) + 1;
-                        $new_customer_id = "c" . str_pad($num, 3, "0", STR_PAD_LEFT);
+                        $new_customer_id = "c" . str_pad($num, 4, "0", STR_PAD_LEFT);
                     }
 
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);

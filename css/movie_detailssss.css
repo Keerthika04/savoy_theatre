@@ -1,134 +1,201 @@
-
 .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding-top: 2dvh;
-    color: var(--darkBg);
-    transition: background-color 0.3s;
-    z-index: 999;
-  }
-  
-  .sub_navbar {
-    display: flex;
-    padding: 0 12dvh;
-    justify-content: space-between;
-    color: var(--darkBg);
-    transition: background-color 0.3s;
-    z-index: 999;
-  }
-  
-  .header .nav_movie a {
-    text-decoration: none;
-    background-color: var(--darkBg);
-    color: var(--white);
-    padding: 0.4rem 1rem;
-    border-radius: 35px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.3s, padding 0.3s;
-  }
-  
-  .header .nav_movie a:hover {
-    padding: 0.6rem 1.2rem;
-    background-color: var(--lightGreenBlue);
-    color: var(--darkBg);
-  }
-  
-  .nav_movie {
-    display: flex;
-    padding: 1vh 12dvh;
-    height: 0;
-    align-items: center;
-    justify-content: space-between;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s ease-in;
-    background-color: var(--white);
-  }
-  
-  .nav_movie.visible {
-    height: auto;
-    margin-top: 1.5rem;
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  .nav_movie h2 {
-    margin: 0;
-  }
-  
-  .nav_movie h4 {
-    margin: 0;
-    margin-top: 0.5rem;
-    font-weight: 400;
-  }
-  
-  .banner .swiper-slide .movie_detail .with_language {
-    margin: 0;
-  }
-  
-  .banner .swiper-slide .movie_detail h3 {
-    font-size: 1.5rem;
-    margin-top: 0.8rem;
-    margin-bottom: 3.5rem;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-top: 2dvh;
+  color: var(--darkBg);
+  transition: background-color 0.3s;
+  z-index: 999;
+}
 
-  .movie_poster {
-    background-color: rgba(0, 0, 0, 0.6);
-  }
-  
-  .movie_details .about_movie,
-  .about_cast {
-    margin: 4% 10%;
-    display: flex;
-    gap: 5rem;
-    color: var(--white);
-  }
-  
-  .movie_details .about_movie .left {
-    flex: 0 0 25%;
-  }
-  
-  .movie_details .about_cast .left {
-    flex: 0 0 25%;
-  }
-  
-  .movie_details .about_movie .left h1 {
-    text-transform: uppercase;
-    font-size: 1rem;
-    line-height: 1rem;
-    font-weight: 400;
-    opacity: 0.7;
-  }
-  
-  .movie_details .about_movie .left h1 span {
-    text-transform: none;
-  }
-  
-  .movie_details .about_movie .right p {
-    font-size: 1.2rem;
-    font-weight: 400;
-    line-height: 2rem;
-    margin: 0;
-  }
-  
-  .movie_details .about_cast .left h1 {
-    font-size: 2rem;
-    font-weight: 600;
-    margin: 0;
-  }
-  
-  .movie_details .about_cast .right h1 {
-    font-size: 2rem;
-    font-weight: 600;
-    margin: 0;
-    margin-bottom: 2rem;
-  }
-  
-  .movie_details .about_cast .right h1 > span {
-    font-size: 1.2rem;
-    font-weight: 500;
-    opacity: 0.8;
-  }
+.sub_navbar {
+  display: flex;
+  padding: 0 12dvh;
+  justify-content: space-between;
+  color: var(--darkBg);
+  transition: background-color 0.3s;
+  z-index: 999;
+}
+
+.header .nav_movie a {
+  text-decoration: none;
+  background-color: var(--darkBg);
+  color: var(--white);
+  padding: 0.4rem 1rem;
+  border-radius: 35px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s, padding 0.3s;
+}
+
+.header .nav_movie a:hover {
+  padding: 0.6rem 1.2rem;
+  background-color: var(--lightGreenBlue);
+  color: var(--darkBg);
+}
+
+.nav_movie {
+  display: flex;
+  padding: 1vh 12dvh;
+  height: 0;
+  align-items: center;
+  justify-content: space-between;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+  background-color: var(--white);
+}
+
+.nav_movie.visible {
+  height: auto;
+  margin-top: 1.5rem;
+  opacity: 1;
+  visibility: visible;
+}
+
+.nav_movie h2 {
+  margin: 0;
+}
+
+.nav_movie h4 {
+  margin: 0;
+  margin-top: 0.5rem;
+  font-weight: 400;
+}
+
+.banner .swiper-slide .banner_text .with_language {
+  margin: 0;
+}
+
+.banner .swiper-slide .banner_text h3 {
+  font-size: 1.5rem;
+  margin-top: 0.8rem;
+  margin-bottom: 3.5rem;
+}
+
+.movie_poster {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.movie_details .about_movie,
+.about_cast {
+  margin: 4% 10%;
+  display: flex;
+  gap: 5rem;
+  color: var(--white);
+}
+
+.movie_details .about_movie .left {
+  flex: 0 0 25%;
+}
+
+.movie_details .about_cast .left {
+  flex: 0 0 25%;
+}
+
+.movie_details .about_movie .left h1 {
+  text-transform: uppercase;
+  font-size: 1rem;
+  line-height: 1rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.movie_details .about_movie .left h1 span {
+  text-transform: none;
+}
+
+.movie_details .about_movie .right p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 2rem;
+  margin: 0;
+}
+
+.movie_details .about_cast .left h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.movie_details .about_cast .right h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  margin-bottom: 2rem;
+}
+
+.movie_details .about_cast .right h1>span {
+  font-size: 1.2rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+/* Feedback */
+.feedback_section {
+  padding: 20px;
+  border-radius: 10px;
+  margin: 1rem 10%;
+}
+
+.feedback_form {
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.feedback_form form{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.feedback_form h2 {
+  color: white;
+  margin-bottom: 20px;
+}
+
+.feedback_form input {
+  width: 100%;
+  padding: 20px;
+  border: none;
+  border-radius: 5px 0 0 5px ;
+  outline: none;
+}
+
+.feedback_form button {
+  background-color: var(--lightGreenBlue);
+  text-wrap: nowrap;
+  color: var(--darkBg);
+  border: none;
+  padding: 20px;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.feedback_form button:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.user_feedbacks {
+  color: white;
+  margin-top: 3rem;
+}
+
+.user_feedbacks h2 {
+  margin-bottom: 1rem;
+}
+
+.user_feedbacks p {
+  background-color: rgba(255, 255, 255, 0.2);
+  overflow-wrap: break-word;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  line-height: 1.5rem;
+}
+
+.user_feedbacks span {
+  color: var(--lightGreenBlue);
+}
