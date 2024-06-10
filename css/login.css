@@ -73,7 +73,7 @@
     position: absolute;
     width: 25%;
     height: 100%;
-    background-color: rgb(231, 126, 126);
+    background-color: #e77e7e;
     transform: translateY(150%);
     border-radius: 50%;
     left: calc((var(--n) - 1) * 25%);

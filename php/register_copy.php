@@ -146,23 +146,22 @@
                     <?php
                     } else {
                     ?>
+                        <?php
+                        $password_hashed = password_hash($_POST['password'], PASSWORD_BCRYPT);
+                        $user_data = array(
+                            'first_name' => $first_name,
+                            'last_name' => $last_name,
+                            'username' => $username,
+                            'password' => $password_hashed,
+                            'email' => $email,
+                            'phone_number' => $phone_number,
+                            'user_type' => $user_type
+                        );
+                        $_SESSION['user_data'] = $user_data;
+                        ?>
                         <script>
-                            <?php
-                            $password_hashed = password_hash($_POST['password'], PASSWORD_BCRYPT);
-                            $user_data = array(
-                                'first_name' => $first_name,
-                                'last_name' => $last_name,
-                                'username' => $username,
-                                'password' => $password_hashed,
-                                'email' => $email,
-                                'phone_number' => $phone_number,
-                                'user_type' => $user_type
-                            );
-                            $_SESSION['user_data'] = $user_data;
-                            ?>
-
                             alert("<?php echo "Register Successfully, OTP sent to " . $email ?>");
-                            window.location.replace('verification.php');
+                            <?php header("Location: ../index.php"); ?>
                         </script>
             <?php
                     }
