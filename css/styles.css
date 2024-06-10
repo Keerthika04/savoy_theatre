@@ -13,6 +13,28 @@ body {
   background-color: var(--darkBg);
 }
 
+.search_box form{
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-left: 1rem;
+}
+
+.search_box input {
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+
+.search_box button {
+  position: absolute;
+  right: 0;
+  background: none;
+  border: none;
+  height: 100%;
+  color: #333;
+}
+
 /* flex classes */
 
 .flex_align_center {
@@ -151,7 +173,7 @@ body {
   justify-content: center;
 }
 
-.banner .swiper-slide .movie_detail {
+.banner .swiper-slide .banner_text {
   position: absolute;
   z-index: 5;
   color: var(--white);
@@ -161,13 +183,13 @@ body {
   bottom: 12vh;
 }
 
-.banner .swiper-slide .movie_detail h1 {
+.banner .swiper-slide .banner_text h1 {
   font-size: 3.5rem;
   margin: 0;
   margin-bottom: 2.5rem;
 }
 
-.banner .swiper-slide .movie_detail a {
+.banner .swiper-slide .banner_text a {
   text-decoration: none;
   background-color: var(--white);
   color: var(--darkBg);
@@ -179,18 +201,18 @@ body {
   font-weight: bold;
 }
 
-.banner .swiper-slide .movie_detail a:hover {
+.banner .swiper-slide .banner_text a:hover {
   background-color: var(--lightGreenBlue);
   border: 2px solid var(--lightGreenBlue);
 }
 
-.banner .swiper-slide .movie_detail .border_btn {
+.banner .swiper-slide .banner_text .border_btn {
   background: none;
   color: var(--white);
   border: 2px solid var(--white);
 }
 
-.banner .swiper-slide .movie_detail .border_btn:hover {
+.banner .swiper-slide .banner_text .border_btn:hover {
   background: none;
   color: var(--lightGreenBlue);
   border: 2px solid var(--lightGreenBlue);

@@ -1,0 +1,41 @@
+.banner .swiper-slide .banner_text{
+    left: 18vh;
+}
+
+.banner .swiper-slide .banner_text h1{
+    margin-bottom: 1rem;
+}
+
+.banner_text p{
+    font-size: 1.5rem;
+}
+
+.about_theatre {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    padding: 2rem;
+    color: var(--white);
+}
+
+.about_theatre div{
+   margin-bottom: 4rem;
+}
+
+.about_theatre div ul {
+    list-style: disc;
+    padding-left: 2rem;
+}
+
+.about_theatre div ul li {
+    margin-bottom: 0.5rem;
+}
+
+.about_theatre div p {
+    margin: 1rem 0;
+    line-height: 1.5rem;
+}
+
+strong {
+    color: var(--lightGreenBlue);
+}

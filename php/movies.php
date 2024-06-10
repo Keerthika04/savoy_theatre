@@ -2,10 +2,33 @@
 session_start();
 require 'db_connection.php';
 
-$query = $db->query("SELECT movie_id, movie_title, movie_card_poster, duration, released_date FROM movies where current_movies = 1");
+if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
+    if (isset($_SESSION['user_id'])) {
+      header("Location: user_profile.php");
+      exit();
+    } else {
+      header("Location: login.php");
+      exit();
+    }
+  }
+
+$searchQuery = isset($_GET['search']) ? $db->real_escape_string($_GET['search']) : '';
+
+if ($searchQuery) {
+    $searchSQL = "movie_id LIKE '%$searchQuery%' OR 
+              movie_title LIKE '%$searchQuery%' OR 
+              language LIKE '%$searchQuery%' OR 
+              movie_cast LIKE '%$searchQuery%' OR 
+              genre LIKE '%$searchQuery%' OR 
+              rating LIKE '%$searchQuery%' OR 
+              duration LIKE '%$searchQuery%' OR 
+              released_date LIKE '%$searchQuery%'";
+    $query = $db->query("SELECT movie_id, movie_title, movie_card_poster, duration, released_date FROM movies WHERE current_movies = 1 AND ($searchSQL)");
+} else {
+    $query = $db->query("SELECT movie_id, movie_title, movie_card_poster, duration, released_date FROM movies WHERE current_movies = 1");
+}
 
 $movies = array();
-
 if ($query->num_rows > 0) {
     while ($row = $query->fetch_assoc()) {
         $movies[] = $row;
@@ -45,13 +68,16 @@ if ($query->num_rows > 0) {
             </div>
             <ul class="nav_links">
                 <li><a href="../index.php">Home</a></li>
-                <li><a href="./php/movies.php">Movies</a></li>
+                <li><a href="movies.php">Movies</a></li>
                 <li><a href="theatre_info.php">Theatre</a></li>
             </ul>
             <div class="search_box">
-            <input type="text" placeholder="Search" />
-            <i class="fas fa-search"></i>
-        </div>
+                <form action="" method="GET">
+                    <input type="text" name="search" placeholder="Search"
+                        value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>"/>
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
         </div>
         <div class="right_nav">
             <a href="./php/booking.php" class="buy_tickets">
