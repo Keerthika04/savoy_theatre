@@ -56,14 +56,11 @@ if ($query->num_rows > 0) {
       </div>
       <ul class="nav_links">
         <li><a href="index.php">Home</a></li>
-        <li><a href="movies.html">Movies</a></li>
-        <li><a href="theatre.html">Theatre</a></li>
+        <li><a href="./php/movies.php">Movies</a></li>
+        <li><a href="./php/theatre_info.php">Theatre</a></li>
       </ul>
+
     </div>
-    <!-- <div class="search_box">
-        <input type="text" placeholder="Search" />
-        <i class="fas fa-search"></i>
-      </div> -->
     <div class="right_nav">
       <a href="./php/booking.php" class="buy_tickets">
         <img src="Images/tickets.png" alt="Ticket Icon" class="ticket_icon" />

@@ -95,24 +95,6 @@ body {
   width: 100%;
 }
 
-.search_box {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.search_box input {
-  border: none;
-  padding: 5px 10px;
-  border-radius: 3px;
-}
-
-.search_box i {
-  position: absolute;
-  right: 10px;
-  color: #333;
-}
-
 .buy_tickets {
   color: var(--white);
   text-decoration: none;
@@ -453,10 +435,6 @@ body {
 @media (max-width: 768px) {
   .nav_links {
     display: none;
-  }
-
-  .search_box {
-    order: -1;
   }
 
   .navbar {

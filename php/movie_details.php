@@ -38,13 +38,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
                 <ul class="nav_links">
                     <li><a href="../index.php">Home</a></li>
                     <li><a href="movies.php">Movies</a></li>
-                    <li><a href="theatre.php">Theatre</a></li>
+                    <li><a href="theatre_info.php">Theatre</a></li>
                 </ul>
             </div>
-            <!-- <div class="search_box">
-        <input type="text" placeholder="Search" />
-        <i class="fas fa-search"></i>
-      </div> -->
             <div class="right_nav">
                 <a href="booking.php" class="buy_tickets">
                     <img src="../Images/tickets.png" alt="Ticket Icon" class="ticket_icon" />
@@ -67,79 +63,80 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
         if ($query->num_rows > 0) {
             while ($row = $query->fetch_assoc()) {
                 $imageURL = '../uploaded_movie_posters/' . $row["movie_poster"];
-        ?>
-                <div class="nav_movie" id="nav_movie">
+
+                if ($row["upcoming_movies"] == 0):
+                    ?>
+                    <div class="nav_movie" id="nav_movie">
+                        <div class="left">
+                            <h2><?php echo htmlspecialchars($row["movie_title"]); ?></h2>
+                            <h4><span>Duration :</span> <?php echo htmlspecialchars($row["duration"]); ?></h4>
+                        </div>
+                        <div class="right">
+                            <a href="booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>">Buy Tickets</a>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </nav>
+
+            <section class="banner">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide movie_poster">
+                            <div class="black_overlay"></div>
+                            <img src="<?php echo $imageURL; ?>" alt="" />
+                            <div class="movie_detail">
+                                <h1 class="with_language"><?php echo htmlspecialchars($row["movie_title"]); ?></h1>
+                                <h3>Language - <?php echo htmlspecialchars($row["language"]); ?></h3>
+
+                                <?php if ($row["upcoming_movies"] == 0): ?>
+                                    <a href="booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>">Buy Tickets</a>
+                                <?php endif; ?>
+
+                                <a href="<?php echo htmlspecialchars($row["movie_trailer"]); ?>" class="border_btn">Watch
+                                    Trailer</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <section class="movie_details">
+                <div class="about_movie">
                     <div class="left">
-                        <h2><?php echo htmlspecialchars($row["movie_title"]); ?></h2>
-                        <h4><span>Duration :</span> <?php echo htmlspecialchars($row["duration"]); ?></h4>
+                        <h1><span>Duration :</span> <?php echo htmlspecialchars($row["duration"]); ?></h1>
+                        <h1><span>Released on :</span> <?php echo htmlspecialchars($row["released_date"]); ?></h1>
+                        <h1><?php echo htmlspecialchars($row["genre"]); ?></h1>
                     </div>
                     <div class="right">
-                        <a href="booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>">Buy Tickets</a>
+                        <p><?php echo htmlspecialchars($row["storyplot"]); ?></p>
                     </div>
                 </div>
-    </nav>
+                <div class="about_cast">
+                    <div class="left">
+                        <h1>Cast & Crew</h1>
+                    </div>
+                    <div class="right">
+                        <?php
+                        $sqlData = $row["movie_cast"];
+                        $sqlData = preg_replace('/\s*,\s*/', ',', trim($sqlData));
+                        $items = explode(',', $sqlData);
 
-    <section class="banner">
-        <div class="swiper-container">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide movie_poster">
-                    <div class="black_overlay"></div>
-                    <img src="<?php echo $imageURL; ?>" alt="" />
-                    <div class="movie_detail">
-                        <h1 class="with_language"><?php echo htmlspecialchars($row["movie_title"]); ?></h1>
-                        <h3>Language - <?php echo htmlspecialchars($row["language"]); ?></h3>
+                        foreach ($items as $item) {
+                            preg_match('/(.*?)(\s*\[.*\])/', $item, $matches);
+                            $name = $matches[1];
+                            $role = $matches[2];
 
-                        <?php if ($row["upcoming_movies"] == 0) : ?>
-                            <a href="booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>">Buy Tickets</a>
-                        <?php endif; ?>
-
-                        <a href="<?php echo htmlspecialchars($row["movie_trailer"]); ?>" class="border_btn">Watch
-                            Trailer</a>
+                            echo "<h1>" . htmlspecialchars($name) . "<span> &nbsp" . htmlspecialchars($role) . "</span></h1>";
+                        }
+                        ?>
                     </div>
                 </div>
+            </section>
 
-            </div>
-        </div>
-    </section>
-    <section class="movie_details">
-        <div class="about_movie">
-            <div class="left">
-                <h1><span>Duration :</span> <?php echo htmlspecialchars($row["duration"]); ?></h1>
-                <h1><span>Released on :</span> <?php echo htmlspecialchars($row["released_date"]); ?></h1>
-                <h1><?php echo htmlspecialchars($row["genre"]); ?></h1>
-            </div>
-            <div class="right">
-                <p><?php echo htmlspecialchars($row["storyplot"]); ?></p>
-            </div>
-        </div>
-        <div class="about_cast">
-            <div class="left">
-                <h1>Cast & Crew</h1>
-            </div>
-            <div class="right">
-                <?php
-                $sqlData = $row["movie_cast"];
-                $sqlData = preg_replace('/\s*,\s*/', ',', trim($sqlData));
-                $items = explode(',', $sqlData);
-
-                foreach ($items as $item) {
-                    preg_match('/(.*?)(\s*\[.*\])/', $item, $matches);
-                    $name = $matches[1];
-                    $role = $matches[2];
-
-                    echo "<h1>" . htmlspecialchars($name) . "<span> &nbsp" . htmlspecialchars($role) . "</span></h1>";
-                }
-                ?>
-            </div>
-        </div>
-    </section>
-
-<?php }
+        <?php }
         } ?>
 
 </body>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script src="../js/script.js"></script>
-s
-
 </html>
