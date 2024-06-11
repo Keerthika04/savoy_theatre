@@ -124,7 +124,7 @@
                     $mail->SMTPSecure = 'tls';
 
                     $mail->Username = 'jeyandrankeerthika5@gmail.com';
-                    $mail->Password = 'qheruhtcgfvqrkhh';
+                    $mail->Password = 'mojfidopvduiutfs';
 
                     $mail->setFrom('jeyandrankeerthika5@gmail.com', 'OTP Verification');
                     $mail->addAddress($_POST["email"]);
@@ -146,22 +146,23 @@
                     <?php
                     } else {
                     ?>
-                        <?php
-                        $password_hashed = password_hash($_POST['password'], PASSWORD_BCRYPT);
-                        $user_data = array(
-                            'first_name' => $first_name,
-                            'last_name' => $last_name,
-                            'username' => $username,
-                            'password' => $password_hashed,
-                            'email' => $email,
-                            'phone_number' => $phone_number,
-                            'user_type' => $user_type
-                        );
-                        $_SESSION['user_data'] = $user_data;
-                        ?>
                         <script>
+                            <?php
+                            $password_hashed = password_hash($_POST['password'], PASSWORD_BCRYPT);
+                            $user_data = array(
+                                'first_name' => $first_name,
+                                'last_name' => $last_name,
+                                'username' => $username,
+                                'password' => $password_hashed,
+                                'email' => $email,
+                                'phone_number' => $phone_number,
+                                'user_type' => $user_type
+                            );
+                            $_SESSION['user_data'] = $user_data;
+                            ?>
+
                             alert("<?php echo "Register Successfully, OTP sent to " . $email ?>");
-                            <?php header("Location: ../index.php"); ?>
+                            window.location.replace('verification.php');
                         </script>
             <?php
                     }
