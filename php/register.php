@@ -16,7 +16,7 @@
     <div class="register-container">
         <div class="register-box">
             <h2 class="register-title">Register</h2>
-            <form id="registrationForm" action="register_copy.php" method="post">
+            <form id="registrationForm" action="register.php" method="post">
                 <div class="form-group">
                     <label for="first_name">First Name:</label>
                     <input type="text" class="form-control" id="first_name" name="first_name" required autocomplete="off">
@@ -130,11 +130,11 @@
                     $mail->addAddress($_POST["email"]);
 
                     $mail->isHTML(true);
-                    $mail->Subject = " Your Savoy Theatre One Time Password (OTP) for Verification";
+                    $mail->Subject = "Your Savoy Theatre One Time Password (OTP) for Verification";
                     $mail->Body = "<p>Dear " . $first_name . " " . $last_name . ", <br> <br>Welcome to Savoy Theatre! We're thrilled to have you onboard. To ensure the security of your Savoy Theatre account, we need to verify your email address using a One Time Password (OTP).</p> <h4>Your verification OTP code is $otp </h4>
                     <br>
                     <p>Please use this OTP to complete the verification process and gain access to your account. Remember, for your security, do not share this OTP with anyone.
-                    <br>If you have any questions or encounter any issues during the login process, please don't hesitate to reach out to our support team at [Savoy Theatre Support Email/Phone Number].
+                    <br>If you have any questions or encounter any issues during the login process, please don't hesitate to reach out to our support team at Savoy Theatre Support.
                     <br>Thank you for choosing Savoy Theatre. We look forward to providing you with an exceptional experience!</p>
                     <b>From Savoy Theatre</b>";
 
@@ -161,7 +161,7 @@
                             $_SESSION['user_data'] = $user_data;
                             ?>
 
-                            alert("<?php echo "Register Successfully, OTP sent to " . $email ?>");
+                            alert("<?php echo "Successfully sent the OTP to " . $email ?>");
                             window.location.replace('verification.php');
                         </script>
             <?php

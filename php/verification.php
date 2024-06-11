@@ -62,16 +62,14 @@ if (isset($_POST["verify"])) {
             $new_customer_id = "c" . str_pad($num, 4, "0", STR_PAD_LEFT);
         }
 
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
         $sql = "INSERT INTO users (user_id, first_name, last_name, username, password, email, phone_no, user_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($sql);
 
-        $stmt->bind_param("sssssssi", $new_customer_id, $first_name, $last_name, $username, $hashed_password, $email, $phone_number, $user_type);
+        $stmt->bind_param("sssssssi", $new_customer_id, $first_name, $last_name, $username, $password, $email, $phone_number, $user_type);
 
         if ($stmt->execute()) {
+            echo "<div class='alert alert-success mt-3'> <a href='login.php'>Click here to login</a>.</div>";
             header("Location: login.php");
-            echo "<div class='alert alert-success mt-3'>Registration successful! <a href='login.php'>Click here to login</a>.</div>";
         } else {
             echo "<div class='alert alert-danger mt-3'>Error: " . $stmt->error . "</div>";
         }
