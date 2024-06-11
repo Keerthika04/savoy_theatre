@@ -1,0 +1,129 @@
+* {
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--white);
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 100vh;
+  background-image: url("../../Images/admin_bg.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.login-box {
+  background-color: rgba(0, 0, 0, 0.85);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  z-index: 1;
+}
+
+.login-title {
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  border-bottom: 1px solid var(--darkBg);
+}
+
+.login-box form {
+  padding: 0 1.2rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  margin-left: 5px;
+}
+
+.form-control {
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+}
+
+.btn-login {
+    color: var(--darkBg);
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 0.5em;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-family: sans-serif;
+    letter-spacing: 0.1em;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: 0.5s;
+    background-color: var(--white);
+    cursor: pointer;
+  }
+  
+  .btn-login span {
+    position: absolute;
+    width: 25%;
+    height: 100%;
+    background-color: var(--lightGreenBlue);
+    transform: translateY(150%);
+    border-radius: 50%;
+    left: calc((var(--n) - 1) * 25%);
+    transition: 0.5s;
+    transition-delay: calc((var(--n) - 1) * 0.1s);
+    z-index: -1;
+  }
+  
+  .btn-login:hover {
+    background-color: rgba(0, 0, 0, 0.35);
+  }
+  
+  .btn-login:hover span {
+    transform: translateY(0) scale(2);
+  }
+  
+  .btn-login span:nth-child(1) {
+    --n: 1;
+  }
+  
+  .btn-login span:nth-child(2) {
+    --n: 2;
+  }
+  
+  .btn-login span:nth-child(3) {
+    --n: 3;
+  }
+  
+  .btn-login span:nth-child(4) {
+    --n: 4;
+  }
+
+  .input-group-text{
+    background-color: var(--white);
+    border: none;
+  }
+
+  .input-group-text i{
+    color: var(--darkBg);
+    
+  }
+
+.register-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.register-link-text {
+  display: inline-block;
+  text-decoration: underline;
+  margin-top: 10px;
+  color: var(--lightGreenBlue);
+}

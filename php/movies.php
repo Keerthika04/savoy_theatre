@@ -23,9 +23,9 @@ if ($searchQuery) {
               rating LIKE '%$searchQuery%' OR 
               duration LIKE '%$searchQuery%' OR 
               released_date LIKE '%$searchQuery%'";
-    $query = $db->query("SELECT movie_id, movie_title, movie_card_poster, duration, released_date FROM movies WHERE current_movies = 1 AND ($searchSQL)");
+    $query = $db->query("SELECT movie_id, movie_title, movie_card_poster, duration, released_date FROM movies WHERE current_movies = 1 AND ($searchSQL) ORDER BY movie_id DESC");
 } else {
-    $query = $db->query("SELECT movie_id, movie_title, movie_card_poster, duration, released_date FROM movies WHERE current_movies = 1");
+    $query = $db->query("SELECT movie_id, movie_title, movie_card_poster, duration, released_date FROM movies WHERE current_movies = 1 ORDER BY movie_id DESC");
 }
 
 $movies = array();
