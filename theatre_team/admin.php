@@ -8,9 +8,8 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="../css/styles.css" />
-    <link rel="stylesheet" href="./css/admin_css.css" />
+    <link rel="stylesheet" href="./css/admin.css" />
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="scripts.js"></script>
 </head>
 
 <body>
@@ -22,42 +21,42 @@
                 </div>
                 <ul class="menu">
                     <li>
-                        <a href="#moviesSection">
+                        <a href="admin.php" class="active">
                             <span>Movies</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#showsSection">
+                        <a href="showtime.php">
                             <span>Shows</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#bookingsSection">
+                        <a href="booking.php">
                             <span>Bookings</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#feedbacksSection">
+                        <a href="feedback.php">
                             <span>Feedback</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="user.php">
                             <span>Users</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="staff.php">
                             <span>Staffs</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#promotionsSection">
+                        <a href="promotion.php">
                             <span>Promotions</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="logout.php">
                             <i class="fa fa-sign-out"></i>
                             <span>Logout</span>
                         </a>
@@ -84,6 +83,16 @@
                 <div class="row">
                     <?php
                     require "../php/db_connection.php";
+                    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["delete_movie_id"])) {
+                        $movieIdToDelete = $_POST["delete_movie_id"];
+                        $deleteQuery = $db->query("DELETE FROM movies WHERE movie_id = '$movieIdToDelete'");
+                        if ($deleteQuery) {
+                            header("Location: ".$_SERVER['PHP_SELF']);
+                            exit();
+                        } else {
+                            echo "Error deleting movie.";
+                        }
+                    }
 
                     $query = $db->query("SELECT * FROM movies ORDER BY movie_id DESC");
 
@@ -91,10 +100,11 @@
                         while ($row = $query->fetch_assoc()) {
                             echo "<div class='col-lg-4'>";
                             echo "<div class='card mb-4'>";
-                            echo "<div class='card-header'>";
+                            echo "<form method='post' class='card-header' onsubmit=\"return confirm('Are you sure?');\">";
+                            echo "<input type='hidden' name='delete_movie_id' value='" . $row["movie_id"] . "'>";
                             echo "<button class='btn btn-success edit-btn mr-2'><i class='fas fa-edit'></i></button>";
-                            echo "<button class='btn btn-danger delete-btn'><i class='fas fa-trash-alt'></i></button>";
-                            echo "</div>";
+                            echo "<button type='submit' class='btn btn-danger delete-btn'><i class='fas fa-trash-alt'></i></button>";
+                            echo "</form>";
                             echo "<img src='" . "../uploaded_movie_posters/" . $row["movie_poster"] . "' class='card-img-top cardImg' alt='Poster'>";
                             echo "<div class='card-body'>";
                             echo "<div class='card-content'>
@@ -209,6 +219,27 @@
     </div>
 
 </body>
-<script src="script/script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById("movieModal");
+    const btn = document.querySelector(".addMovie");
+    const span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+});
+
+</script>
 
 </html>
