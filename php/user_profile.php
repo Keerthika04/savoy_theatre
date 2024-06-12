@@ -63,6 +63,14 @@ if ($stmt = $db->prepare($sql)) {
 
         <h3>Booking Details</h3>
         <div class="booking-details">
+            <div class="d-flex justify-content-end">
+                <div class="alert alert-warning">
+                    Waiting
+                </div>
+                <div class="alert alert-success ml-2">
+                    Confirmed
+                </div>
+            </div>
             <?php
 
             $customer_id = $_SESSION['user_id'];
@@ -71,7 +79,7 @@ if ($stmt = $db->prepare($sql)) {
             m.movie_title AS movie_name,
             s.date AS show_date,
             s.time AS show_time,
-            b.parking_id,
+            b.parking_id, b.confirm_booking,
             b.seats AS booked_seats
         FROM 
             booking b
@@ -90,7 +98,7 @@ if ($stmt = $db->prepare($sql)) {
                 $result = $stmt->get_result();
 
                 if ($result->num_rows > 0) {
-                    
+
                     if (isset($_SESSION['alert_message'])) {
                         echo "<div class='alert alert-success mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
                         unset($_SESSION['alert_message']);
@@ -107,8 +115,13 @@ if ($stmt = $db->prepare($sql)) {
 
                     while ($row = $result->fetch_assoc()) {
                         $parking_id = $row["parking_id"] == Null ? " No Parking " : htmlspecialchars($row["parking_id"]);
-                        echo "<tr>
-                        <td>" . htmlspecialchars($row["movie_name"]) . "</td>
+                        if (!$row["confirm_booking"]) {
+                            echo "<tr class='table-warning text-dark'>";
+                        } else {
+                            echo "<tr class='table-success text-dark'>";
+                        }
+
+                        echo "<td>" . htmlspecialchars($row["movie_name"]) . "</td>
                         <td>" . htmlspecialchars($row["show_date"]) . "</td>
                         <td>" . htmlspecialchars($row["show_time"]) . "</td>
                         <td>" . $parking_id . "</td>
