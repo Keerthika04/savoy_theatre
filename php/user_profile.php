@@ -90,6 +90,12 @@ if ($stmt = $db->prepare($sql)) {
                 $result = $stmt->get_result();
 
                 if ($result->num_rows > 0) {
+                    
+                    if (isset($_SESSION['alert_message'])) {
+                        echo "<div class='alert alert-success mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
+                        unset($_SESSION['alert_message']);
+                    }
+
                     echo "<table class = 'booking_table table'>";
                     echo "<thead>
                 <th>Movie Name</th>

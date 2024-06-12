@@ -26,6 +26,7 @@ if ($parking !== "No Parking") {
     $stmt = $db->prepare($query);
     $stmt->bind_param("ss", $newParkingID, $parking);
     $stmt->execute();
+    $stmt->close();
 }
 
 $query = $db->query("SELECT booking_id FROM booking ORDER BY booking_id DESC LIMIT 1");
@@ -45,6 +46,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 $showID = $row['show_id'];
+$stmt->close();
 
 $query = "INSERT INTO booking (booking_id, customer_id, showtime_id, date, adult, children, total, seats, parking_id) VALUES (?,?,?,?,?,?,?,?,?)";
 $stmt = $db->prepare($query);
@@ -52,8 +54,9 @@ $stmt->bind_param("sssssssss", $newID, $_SESSION['user_id'], $showID, $date, $ad
 $stmt->execute();
 
 if ($stmt->affected_rows > 0) {
-    echo "Booking successful!";
+    $_SESSION['alert_message'] = "Successfully Booked!";
+    echo "Successfully Booked!";
 } else {
-    echo "Error: " . $db->error;
+    echo "Error: " . $db->error . "Booking Failed";
 }
-?>
+$stmt->close();

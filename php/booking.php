@@ -5,6 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     $_SESSION['alert_message'] = "You have to login to book!";
     $_SESSION['booking'] = true;
     header("Location: login.php");
+    exit();
 }
 function getMovies($db)
 {
@@ -102,16 +103,14 @@ if (!$movie_id) {
     <div class="black_overlay"></div>
     <nav class="contents">
         <div class="top_nav">
-            <a href="../index.php"><i class="fa-solid fa-circle-chevron-left"
-                    style="color: #ffffff; font-size: 1.5rem;"></i></a>
+            <a href="../index.php"><i class="fa-solid fa-circle-chevron-left" style="color: #ffffff; font-size: 1.5rem;"></i></a>
             <h4>Show Times</h4>
         </div>
         <div class="bottom_nav">
             <form method="post" id="movieSelectForm">
                 <div class="form-group">
-                    <select class="form-control movie_selection" id="movieSelect" name="movie"
-                        onchange="document.getElementById('movieSelectForm').submit();">
-                        <?php foreach ($all_movies as $movie_option): ?>
+                    <select class="form-control movie_selection" id="movieSelect" name="movie" onchange="document.getElementById('movieSelectForm').submit();">
+                        <?php foreach ($all_movies as $movie_option) : ?>
                             <option value="<?php echo htmlspecialchars($movie_option['movie_id']); ?>" <?php echo ($movie_option['movie_id'] == $movie_id) ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($movie_option['movie_title']); ?>
                             </option>
@@ -128,7 +127,7 @@ if (!$movie_id) {
             </div>
         </div>
     </nav>
-    <?php if ($selected_movie): ?>
+    <?php if ($selected_movie) : ?>
         <div class="movie contents">
             <h1><?php echo htmlspecialchars($selected_movie['movie_title']); ?></h1>
             <h5>Duration: <?php echo htmlspecialchars($selected_movie['duration']); ?></h5>
@@ -136,83 +135,76 @@ if (!$movie_id) {
             <p><?php echo htmlspecialchars($selected_movie['storyplot']); ?></p>
             <br>
             <div class="movie_bg">
-                <?php if (!empty($selected_movie['showtimes'])): ?>
+                <?php if (!empty($selected_movie['showtimes'])) : ?>
                     <h4>Show Available Dates</h4>
                     <div class="radio-btn-group">
-                        <?php foreach ($selected_movie['showtimes'] as $date => $showtimes): ?>
+                        <?php foreach ($selected_movie['showtimes'] as $date => $showtimes) : ?>
                             <div class="ticket">
-                                <input type="radio" id="date_<?php echo htmlspecialchars($date); ?>" name="showdate"
-                                    value="<?php echo htmlspecialchars($date); ?>"
-                                    onclick="showShowtimes('<?php echo htmlspecialchars($date); ?>')">
+                                <input type="radio" id="date_<?php echo htmlspecialchars($date); ?>" name="showdate" value="<?php echo htmlspecialchars($date); ?>" onclick="showShowtimes('<?php echo htmlspecialchars($date); ?>')">
                                 <img src="../Images/ticket.png" alt="">
-                                <label
-                                    for="date_<?php echo htmlspecialchars($date); ?>"><?php echo htmlspecialchars($date); ?></label>
+                                <label for="date_<?php echo htmlspecialchars($date); ?>"><?php echo htmlspecialchars($date); ?></label>
                             </div>
                         <?php endforeach; ?>
                     </div>
                     <div class="showtimes">
 
-                        <?php foreach ($selected_movie['showtimes'] as $date => $showtimes): ?>
+                        <?php foreach ($selected_movie['showtimes'] as $date => $showtimes) : ?>
                             <ul id="showtimes_<?php echo htmlspecialchars($date); ?>" class="showtime-list">
-                                <?php foreach ($showtimes as $time): ?>
+                                <?php foreach ($showtimes as $time) : ?>
                                     <h5>Time:</h5>
-                                    <input type="radio" id="time_<?php echo htmlspecialchars($date . '_' . $time); ?>" name="showtime"
-                                        value="<?php echo htmlspecialchars($time); ?>"
-                                        onclick="setSelectedShowtime('<?php echo htmlspecialchars($time); ?>')">
-                                    <label for="time_<?php echo htmlspecialchars($date . '_' . $time); ?>"><i
-                                            class="fa-regular fa-clock" style="margin-right: 3px;"></i>
+                                    <input type="radio" id="time_<?php echo htmlspecialchars($date . '_' . $time); ?>" name="showtime" value="<?php echo htmlspecialchars($time); ?>" onclick="setSelectedShowtime('<?php echo htmlspecialchars($time); ?>')">
+                                    <label for="time_<?php echo htmlspecialchars($date . '_' . $time); ?>"><i class="fa-regular fa-clock" style="margin-right: 3px;"></i>
                                         <?php echo htmlspecialchars($time); ?></label>
                                 <?php endforeach; ?>
                             </ul>
                         <?php endforeach; ?>
                     </div>
+            </div>
+            <div class="count">
+                <div class="form-group">
+                    <label for="adults">Number of Adults:</label>
+                    <input type="number" id="adults" class="form-control" min="0" value="0" onchange="validateTotal()">
                 </div>
-                <div class="count">
-                    <div class="form-group">
-                        <label for="adults">Number of Adults:</label>
-                        <input type="number" id="adults" class="form-control" min="0" value="0" onchange="validateTotal()">
-                    </div>
-                    <div class="form-group">
-                        <label for="children">Number of Children:</label>
-                        <input type="number" id="children" class="form-control" min="0" value="0" onchange="validateTotal()">
-                    </div>
+                <div class="form-group">
+                    <label for="children">Number of Children:</label>
+                    <input type="number" id="children" class="form-control" min="0" value="0" onchange="validateTotal()">
                 </div>
-                <div id="normalSeats">
-                    <h3> - Normal Seats - </h3>
-                </div>
-                <div id="odcSeats">
-                    <h3>- ODC Seats -</h3>
-                </div>
-                <div id="balconySeats">
-                    <h3>- Balcony Seats -</h3>
-                </div>
+            </div>
+            <div id="normalSeats">
+                <h3> - Normal Seats - </h3>
+            </div>
+            <div id="odcSeats">
+                <h3>- ODC Seats -</h3>
+            </div>
+            <div id="balconySeats">
+                <h3>- Balcony Seats -</h3>
+            </div>
 
-                <div class="parking">
-                    <div class="form-group">
-                        <select id="parking" class="form-control">
-                            <option value="No Parking">No Parking</option>
-                            <option value="Motorbike">Motorbike</option>
-                            <option value="Car">Car</option>
-                            <option value="Minivan">Minivan</option>
-                        </select>
-                    </div>
+            <div class="parking">
+                <div class="form-group">
+                    <select id="parking" class="form-control">
+                        <option value="No Parking">No Parking</option>
+                        <option value="Motorbike">Motorbike</option>
+                        <option value="Car">Car</option>
+                        <option value="Minivan">Minivan</option>
+                    </select>
                 </div>
-                <div class="mt-3">
-                    <button class="btn btn-light bookingBtn" id="bookButton" onclick="bookShowtime()">Book Now
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                </div>
-            <?php else: ?>
-                <p>No showtimes available for this movie.</p>
-            <?php endif; ?>
+            </div>
+            <div class="mt-3">
+                <button class="btn btn-light bookingBtn" id="bookButton" onclick="bookShowtime()">Book Now
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        <?php else : ?>
+            <p>No showtimes available for this movie.</p>
+        <?php endif; ?>
         </div>
     <?php endif; ?>
     <!-- Booking Modal -->
-    <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -274,7 +266,7 @@ if (!$movie_id) {
             }
         }
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             function createSeats(section, count, prefix) {
                 let rows = Math.ceil(count / 15);
                 let seatNumber = 1;
@@ -295,12 +287,12 @@ if (!$movie_id) {
             createSeats($('#balconySeats'), 200, 'C');
 
             function updateBookedSeats(bookedSeats) {
-                $('.seat').each(function () {
+                $('.seat').each(function() {
                     const seatNumber = $(this).attr('data-seat-number');
                     if (bookedSeats.includes(seatNumber)) {
                         $(this).addClass('booked').off('click');
                     } else {
-                        $('.seat').on('click', function () {
+                        $('.seat').on('click', function() {
                             if (!$(this).hasClass('selected') && selectedSeats.length < totalSeats) {
                                 $(this).addClass('selected');
                                 selectedSeats.push(parseInt($(this).text()));
@@ -313,7 +305,7 @@ if (!$movie_id) {
                 });
             }
 
-            $('#adults, #children').on('input', function () {
+            $('#adults, #children').on('input', function() {
                 totalSeats = parseInt($('#adults').val()) + parseInt($('#children').val());
                 if (selectedSeats.length > totalSeats) {
                     selectedSeats = selectedSeats.slice(0, totalSeats);
@@ -332,23 +324,23 @@ if (!$movie_id) {
                         date: date,
                         time: time
                     },
-                    success: function (response) {
+                    success: function(response) {
                         bookedSeats = JSON.parse(response);
                         updateBookedSeats(bookedSeats);
                     },
-                    error: function (xhr, status, error) {
+                    error: function(xhr, status, error) {
                         alert('Error fetching booked seats: ' + error);
                     }
                 });
             }
 
-            $('#movieSelect').on('change', function () {
+            $('#movieSelect').on('change', function() {
                 const date = $('input[name="showdate"]:checked').val();
                 const time = $('input[name="showtime"]:checked').val();
                 fetchBookedSeats(date, time);
             });
 
-            $('input[name="showdate"], input[name="showtime"]').on('change', function () {
+            $('input[name="showdate"], input[name="showtime"]').on('change', function() {
                 const date = $('input[name="showdate"]:checked').val();
                 const time = $('input[name="showtime"]:checked').val();
                 fetchBookedSeats(date, time);
@@ -362,19 +354,19 @@ if (!$movie_id) {
                         date: date,
                         time: time
                     },
-                    success: function (response) {
+                    success: function(response) {
                         bookedSeats = JSON.parse(response);
                         updateBookedSeats();
                         // console.log('Working');
                     },
-                    error: function (xhr, status, error) {
+                    error: function(xhr, status, error) {
                         alert('Error fetching booked seats: ' + error);
                     }
                 });
             }
 
             function updateBookedSeats() {
-                $('.seat').each(function () {
+                $('.seat').each(function() {
                     const seatNumber = $(this).attr('data-seat-number');
                     if (bookedSeats.includes(seatNumber)) {
                         $(this).addClass('booked');
@@ -382,7 +374,7 @@ if (!$movie_id) {
                         $(this).off('click');
                     } else {
                         $(this).removeClass('booked');
-                        $(this).on('click', function () {
+                        $(this).on('click', function() {
                             const seatNumber = $(this).attr('data-seat-number');
                             if (!$(this).hasClass('selected') && selectedSeats.length < totalSeats) {
                                 $(this).addClass('selected');
@@ -459,7 +451,7 @@ if (!$movie_id) {
         }
 
 
-        $('#payNow').on('click', function () {
+        $('#payNow').on('click', function() {
             const name = $('#name').val();
             const mobile = $('#mobile').val();
             const movie = $('#modalMovie').text();
@@ -486,12 +478,15 @@ if (!$movie_id) {
                     parking: parking,
                     totalPrice: totalPrice
                 },
-                success: function (response) {
+                success: function(response) {
                     alert(response);
                     $('#bookingModal').modal('hide');
                     document.getElementById('movieSelectForm').submit();
+                    if (response.trim() === "Successfully Booked!") {
+                        window.location.href = 'user_profile.php';
+                    }
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     alert('Error: ' + error);
                 }
             });

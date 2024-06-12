@@ -40,7 +40,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
             </ul>
         </div>
         <div class="right_nav">
-            <a href="./php/booking.php" class="buy_tickets">
+            <a href="booking.php" class="buy_tickets">
                 <img src="../Images/tickets.png" alt="Ticket Icon" class="ticket_icon" />
                 Buy Movie Tickets
             </a>

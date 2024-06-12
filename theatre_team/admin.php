@@ -66,14 +66,13 @@
             </div>
         </div>
 
+        <div class="movies_details_admin">
         <?php
         session_start();
         if (isset($_SESSION['alert_message'])) {
-            echo "<div class='alert alert-danger mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
+            echo "<div class='alert alert-success mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
             unset($_SESSION['alert_message']);
         } ?>
-
-        <div class="movies_details_admin">
             <div class="card-body" id="moviesSection">
                 <div class="movie_head">
                     <h2>

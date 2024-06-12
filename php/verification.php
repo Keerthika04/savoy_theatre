@@ -68,7 +68,7 @@ if (isset($_POST["verify"])) {
         $stmt->bind_param("sssssssi", $new_customer_id, $first_name, $last_name, $username, $password, $email, $phone_number, $user_type);
 
         if ($stmt->execute()) {
-            echo "<div class='alert alert-success mt-3'> <a href='login.php'>Click here to login</a>.</div>";
+            $_SESSION['success_alert_message'] = "Successfully Registered!";
             header("Location: login.php");
         } else {
             echo "<div class='alert alert-danger mt-3'>Error: " . $stmt->error . "</div>";

@@ -42,15 +42,6 @@
             session_start();
             require '../php/db_connection.php';
 
-            if (!empty($_SESSION['movie_id'])) {
-                $movie_id = $_SESSION['movie_id'];
-            }
-
-            if (isset($_SESSION['alert_message'])) {
-                echo "<div class='alert alert-danger mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
-                unset($_SESSION['alert_message']);
-            }
-
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $username = $_POST['username'];

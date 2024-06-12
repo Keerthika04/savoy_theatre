@@ -53,6 +53,11 @@
                 unset($_SESSION['alert_message']);
             }
 
+            if (isset($_SESSION['success_alert_message'])) {
+                echo "<div class='alert alert-success mt-3'>" . htmlspecialchars($_SESSION['success_alert_message']) . "</div>";
+                unset($_SESSION['success_alert_message']);
+            }
+
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $username = $_POST['username'];
