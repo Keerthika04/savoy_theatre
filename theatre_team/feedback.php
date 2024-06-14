@@ -8,7 +8,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="../css/styles.css" />
-    <link rel="stylesheet" href="./css/css.css" />
+    <link rel="stylesheet" href="./css/admin_dashboard.css" />
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 
@@ -69,7 +69,7 @@
             <div class="card-body" id="booking_Section">
                 <div class="booking_head">
                     <h2>
-                        Booking DETAILS
+                        FEEDBACK DETAILS
                     </h2>
                 </div>
 
@@ -83,7 +83,7 @@
                             header("Location: " . $_SERVER['PHP_SELF']);
                             exit();
                         } else {
-                            echo "Error deleting movie.";
+                            echo "Error deleting feedback.";
                         }
                     }
 

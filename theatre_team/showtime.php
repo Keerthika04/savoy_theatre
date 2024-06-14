@@ -8,7 +8,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="../css/styles.css" />
-    <link rel="stylesheet" href="./css/admin.css" />
+    <link rel="stylesheet" href="./css/admin_dashboard.css" />
 </head>
 
 <body>
@@ -132,7 +132,7 @@
     </div>
 
 
-    <!-- Add New Movie modal -->
+    <!-- Add New Showtimes modal -->
     <div id="showModal" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

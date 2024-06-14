@@ -107,7 +107,6 @@
 
                 if (empty($errors)) {
 
-
                     $otp = rand(100000, 999999);
                     $_SESSION['otp'] = $otp;
                     $_SESSION['mail'] = $email;
