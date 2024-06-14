@@ -63,7 +63,7 @@
                 $username = $_POST['username'];
                 $password = $_POST['password'];
 
-                $sql = "SELECT user_id, username, password FROM users WHERE username = ? AND user_type = 2";
+                $sql = "SELECT user_id, username, password FROM users WHERE username = ? AND (user_type = 2 or user_type = 0)";
 
                 if ($stmt = $db->prepare($sql)) {
                     $stmt->bind_param("s", $username);

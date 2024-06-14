@@ -2,6 +2,16 @@
     display: flex;
 }
 
+.admin_search input{
+    padding-left: 20px;
+    border-radius: 25px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+.admin_search button{
+    right: 6px;
+}
+
 .sidebar {
     height: 100vh;
     width: 30vh;
@@ -71,7 +81,8 @@
 .showtime_details_admin,
 .booking_details_admin,
 .user_details_admin,
-.staff_details_admin {
+.staff_details_admin,
+.staff_user_profile {
     top: 0;
     background: #f7f7f7;
     border-top-left-radius: 12px;
@@ -222,7 +233,7 @@
 }
 
 .otp {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(0, 0, 0, 0.85);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.6);
@@ -230,13 +241,13 @@
 .otp h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: #333;
+    color: var(--white);
 }
 .otp form {
     display: flex;
     align-items: center;
 }
-.form-control {
+.verification_input { 
     width: 300px;
     height: 100%;
     padding: 12px;
@@ -244,22 +255,35 @@
     outline: none;
 }
 
-.form-control:focus {
+.verification_input:focus {
     border: none;
     box-shadow: none;
 }
 
 .submit-btn {
-    padding: 10px;
+    padding: 10.5px;
     border: none;
     text-wrap: nowrap;
     border-radius: 0 5px 5px 0;
-    background-color: var(--darkBg);
-    color: #fff;
+    background-color: var(--lightGreenBlue);
+    color: var(--darkBg);
     cursor: pointer;
     transition: 0.3s;
 }
 .submit-btn:hover {
     background-color: #93e77e;
+    color: var(--darkBg);
+}
+
+/* User_Profile */
+.container{
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 0 3px 3px rgba(27, 27, 27, 0.2);
+    overflow: hidden;
     color: var(--darkBg);
 }
