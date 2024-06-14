@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Savoy</title>
@@ -47,7 +46,7 @@
                 $username = $_POST['username'];
                 $password = $_POST['password'];
 
-                $sql = "SELECT user_id, username, password FROM users WHERE username = ? AND user_type = 0";
+                $sql = "SELECT user_id, username, password, user_type FROM users WHERE username = ? AND (user_type = 0 OR user_type = 1)";
 
                 if ($stmt = $db->prepare($sql)) {
                     $stmt->bind_param("s", $username);
@@ -56,11 +55,12 @@
                     $stmt->store_result();
 
                     if ($stmt->num_rows == 1) {
-                        $stmt->bind_result($user_id, $username, $user_password);
+                        $stmt->bind_result($user_id, $username, $user_password, $user_type);
                         if ($stmt->fetch()) {
                             if (password_verify($password, $user_password)) {
                                 $_SESSION['username'] = $username;
-                                header("Location: admin.php");
+                                $_SESSION['user_type'] = $user_type;
+                                 header("Location: movies.php");
                                 exit();
                             } else {
                                 echo "<div class='alert alert-danger text-center mt-3'>The password you entered is not valid!</div>";

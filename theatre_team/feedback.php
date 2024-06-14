@@ -1,7 +1,11 @@
 <?php
 session_start();
-if (!isset($_SESSION['username'])) {
-    header("Location: index.php");
+if (!isset($_SESSION['username']) || $_SESSION['user_type'] != 0) {
+    if ($_SESSION['user_type'] != 0) {
+        header("Location: movies.php");
+    } else {
+        header("Location: index.php");
+    }
     exit();
 }
 ?>
@@ -28,7 +32,7 @@ if (!isset($_SESSION['username'])) {
                 </div>
                 <ul class="menu">
                     <li>
-                        <a href="admin.php">
+                        <a href="movies.php">
                             <span>Movies</span>
                         </a>
                     </li>
