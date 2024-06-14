@@ -27,7 +27,7 @@ if (!isset($_SESSION['username'])) {
                 </div>
                 <ul class="menu">
                     <li>
-                        <a href="admin.php">
+                        <a href="movies.php">
                             <span>Movies</span>
                         </a>
                     </li>
@@ -41,26 +41,28 @@ if (!isset($_SESSION['username'])) {
                             <span>Bookings</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="feedback.php">
-                            <span>Feedback</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="user.php">
-                            <span>Users</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="staff.php">
-                            <span>Staffs</span>
-                        </a>
-                    </li>
+                    <?php if ($_SESSION['user_type'] != 1) { ?>
+                        <li>
+                            <a href="feedback.php">
+                                <span>Feedback</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="user.php">
+                                <span>Users</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="staff.php">
+                                <span>Staffs</span>
+                            </a>
+                        </li>
                     <li>
                         <a href="promotion.php">
                             <span>Promotions</span>
                         </a>
                     </li>
+                    <?php }; ?>
                     <li>
                         <a href="logout.php">
                             <i class="fa fa-sign-out"></i>

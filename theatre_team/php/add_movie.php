@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bind_param("ssssssssisssii", $newID, $movie_title, $movie_card_poster, $movie_poster, $language, $movie_cast, $genre, $storyplot, $rating, $movie_trailer, $duration, $released_date, $current_movies, $upcoming_movies);
             if ($stmt->execute()) {
                 $_SESSION['alert_message'] = "New movie added successfully";
-                header("Location: ../admin.php");
+                header("Location: ../movies.php");
             } else {
                 echo "Error: " . $stmt->error;
             }

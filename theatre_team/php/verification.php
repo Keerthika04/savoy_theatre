@@ -1,3 +1,15 @@
+<?php
+session_start();
+if (!isset($_SESSION['username']) || $_SESSION['user_type'] != 0) {
+    if ($_SESSION['user_type'] != 0) {
+        header("Location: ../movies.php");
+    } else {
+        header("Location: ../index.php");
+    }
+    exit();
+}
+?>
+
 <!doctype html>
 <html lang="en">
 
@@ -27,7 +39,6 @@
 
 </html>
 <?php
-session_start();
 require '../../php/db_connection.php';
 
 if (isset($_POST["verify"])) {
