@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: index.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -66,7 +73,6 @@
 
         <div class="showtime_details_admin">
             <?php
-            session_start();
             if (isset($_SESSION['alert_message'])) {
                 echo "<div class='alert alert-success mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
                 unset($_SESSION['alert_message']);
@@ -76,6 +82,12 @@
                     <h2>
                         SHOWTIME DETAILS
                     </h2>
+                    <div class="search_box admin_search">
+                        <form action="" method="GET">
+                            <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
                     <button class="addShow">Add Show Time</button>
                 </div>
 
@@ -93,7 +105,19 @@
                         }
                     }
 
-                    $query = $db->query("SELECT movies.movie_title, movies.language, showtimes.show_id, showtimes.date, showtimes.time FROM showtimes JOIN movies ON showtimes.movie_id = movies.movie_id  ORDER BY showtimes.date ASC");
+                    $searchQuery = isset($_GET['search']) ? $db->real_escape_string($_GET['search']) : '';
+
+                    if ($searchQuery) {
+                        $searchSQL = "movies.movie_title LIKE '%$searchQuery%' OR 
+                                      movies.language LIKE '%$searchQuery%' OR 
+                                      showtimes.show_id LIKE '%$searchQuery%' OR 
+                                      showtimes.date LIKE '%$searchQuery%' OR 
+                                      showtimes.time LIKE '%$searchQuery%'";
+
+                        $query = $db->query("SELECT movies.movie_title, movies.language, showtimes.show_id, showtimes.date, showtimes.time FROM showtimes JOIN movies ON showtimes.movie_id = movies.movie_id WHERE ($searchSQL) ORDER BY showtimes.date DESC");
+                    } else {
+                        $query = $db->query("SELECT movies.movie_title, movies.language, showtimes.show_id, showtimes.date, showtimes.time FROM showtimes JOIN movies ON showtimes.movie_id = movies.movie_id  ORDER BY showtimes.date ASC");
+                    }
 
                     if ($query->num_rows > 0) {
                         echo "<table border='1' class='table table-bordered' width='100%' cellspacing='0'>";
@@ -179,45 +203,45 @@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-        $(document).ready(function() {
-            function fetchMovies() {
-                $.ajax({
-                    url: 'php/fetch_movies.php',
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        var movieSelect = $('#movie');
-                        movieSelect.empty();
-                        $.each(data, function(index, movie) {
-                            movieSelect.append('<option value="' + movie.movie_id + '">' + movie.movie_title + '</option>');
-                        });
-                    },
-                    error: function() {
-                        alert('Failed to fetch movies');
-                    }
-                });
-            }
+    $(document).ready(function() {
+        function fetchMovies() {
+            $.ajax({
+                url: 'php/fetch_movies.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var movieSelect = $('#movie');
+                    movieSelect.empty();
+                    $.each(data, function(index, movie) {
+                        movieSelect.append('<option value="' + movie.movie_id + '">' + movie.movie_title + '</option>');
+                    });
+                },
+                error: function() {
+                    alert('Failed to fetch movies');
+                }
+            });
+        }
 
-            fetchMovies();
+        fetchMovies();
 
-            const modal = document.getElementById("showModal");
-            const btn = document.querySelector(".addShow");
-            const span = document.getElementsByClassName("close")[0];
+        const modal = document.getElementById("showModal");
+        const btn = document.querySelector(".addShow");
+        const span = document.getElementsByClassName("close")[0];
 
-            btn.onclick = function() {
-                modal.style.display = "block";
-            }
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
 
-            span.onclick = function() {
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
                 modal.style.display = "none";
             }
-
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-        });
-    </script>
+        }
+    });
+</script>
 
 </html>

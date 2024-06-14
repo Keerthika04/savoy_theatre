@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: index.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -71,6 +78,12 @@
                     <h2>
                         FEEDBACK DETAILS
                     </h2>
+                    <div class="search_box admin_search">
+                        <form action="" method="GET">
+                            <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -87,51 +100,67 @@
                         }
                     }
 
-                    $query = $db->query("SELECT movie_feedbacks.feedback_id, movie_feedbacks.feedbacks, users.username, movies.movie_id, movies.movie_title
+                    $searchQuery = isset($_GET['search']) ? $db->real_escape_string($_GET['search']) : '';
+
+                    if ($searchQuery) {
+                        $searchSQL = "movie_feedbacks.feedback_id LIKE '%$searchQuery%' OR 
+                                      movie_feedbacks.feedbacks LIKE '%$searchQuery%' OR 
+                                      users.username LIKE '%$searchQuery%' OR 
+                                      movies.movie_id LIKE '%$searchQuery%' OR 
+                                      movies.movie_title LIKE '%$searchQuery%'";
+
+                        $query = $db->query("SELECT movie_feedbacks.feedback_id, movie_feedbacks.feedbacks, users.username, movies.movie_id, movies.movie_title
+                                         FROM movie_feedbacks
+                                         JOIN users ON movie_feedbacks.user_id = users.user_id
+                                         JOIN movies ON movie_feedbacks.movie_id = movies.movie_id WHERE ($searchSQL) ORDER BY feedback_id DESC");
+                    } else {
+
+                        $query = $db->query("SELECT movie_feedbacks.feedback_id, movie_feedbacks.feedbacks, users.username, movies.movie_id, movies.movie_title
                                          FROM movie_feedbacks
                                          JOIN users ON movie_feedbacks.user_id = users.user_id
                                          JOIN movies ON movie_feedbacks.movie_id = movies.movie_id
                                          ORDER BY feedback_id DESC");
-                                         
-                                         $current_movie_id = null;
-                                         if ($query->num_rows > 0) {
-                                             while ($row = $query->fetch_assoc()) {
-                                                 if ($current_movie_id != $row["movie_id"]) {
-                                                     if ($current_movie_id != null) {
-                                                         echo "</table>";
-                                                         echo "</div>";
-                                                         echo "</div>";
-                                                         echo "</div>";
-                                                     }
-                                                     // Card for new movie
-                                                     $current_movie_id = $row["movie_id"];
-                                                     echo "<div class='w-100 mx-4'>";
-                                                     echo "<div class='card mb-4'>";
-                                                     echo "<div class='card-body'>";
-                                                     echo "<h3>" . $row["movie_title"] . "</h3>";
-                                                     echo "<table class='table table-bordered'>";
-                                                 }
-                                                 // Display feedback for that movie
-                                                 echo "<tr><td class='width'><strong>Feedback By:</strong> " . $row["username"] . "</td><td class='width'>" . $row["feedbacks"] . "</td>";                       
-                                                 echo "<form method='post' class='card-header' onsubmit=\"return confirm('Are you sure?');\">";
-                                                 echo "<input type='hidden' name='delete_feedback_id' value='" . $row["feedback_id"] . "'>";
-                                                 echo "<td class='text-center width'><button type='submit' class='btn btn-danger delete-btn'><i class='fas fa-trash-alt'></i></button></td>";
-                                                 echo "</form></tr>";
-                                             }
-                                             // Close the last card
-                                             echo "</table>";
-                                             echo "</div>";
-                                             echo "</div>";
-                                             echo "</div>";
-                                         } else {
-                                             echo "<div class='w-100 mx-4'>";
-                                             echo "<div class='card mb-4'>";
-                                             echo "<div class='card-body'>";
-                                             echo "<h4>No feedback available.</h4>";
-                                             echo "</div>";
-                                             echo "</div>";
-                                             echo "</div>";
-                                         }
+                    }
+
+                    $current_movie_id = null;
+                    if ($query->num_rows > 0) {
+                        while ($row = $query->fetch_assoc()) {
+                            if ($current_movie_id != $row["movie_id"]) {
+                                if ($current_movie_id != null) {
+                                    echo "</table>";
+                                    echo "</div>";
+                                    echo "</div>";
+                                    echo "</div>";
+                                }
+                                // Card for new movie
+                                $current_movie_id = $row["movie_id"];
+                                echo "<div class='w-100 mx-4'>";
+                                echo "<div class='card mb-4'>";
+                                echo "<div class='card-body'>";
+                                echo "<h3>" . $row["movie_title"] . "</h3>";
+                                echo "<table class='table table-bordered'>";
+                            }
+                            // Display feedback for that movie
+                            echo "<tr><td class='width'><strong>Feedback By:</strong> " . $row["username"] . "</td><td class='width'>" . $row["feedbacks"] . "</td>";
+                            echo "<form method='post' class='card-header' onsubmit=\"return confirm('Are you sure?');\">";
+                            echo "<input type='hidden' name='delete_feedback_id' value='" . $row["feedback_id"] . "'>";
+                            echo "<td class='text-center width'><button type='submit' class='btn btn-danger delete-btn'><i class='fas fa-trash-alt'></i></button></td>";
+                            echo "</form></tr>";
+                        }
+                        // Close the last card
+                        echo "</table>";
+                        echo "</div>";
+                        echo "</div>";
+                        echo "</div>";
+                    } else {
+                        echo "<div class='w-100 mx-4'>";
+                        echo "<div class='card mb-4'>";
+                        echo "<div class='card-body'>";
+                        echo "<h4>No feedback available.</h4>";
+                        echo "</div>";
+                        echo "</div>";
+                        echo "</div>";
+                    }
                     ?>
                 </div>
             </div>

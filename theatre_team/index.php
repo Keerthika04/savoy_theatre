@@ -59,6 +59,7 @@
                         $stmt->bind_result($user_id, $username, $user_password);
                         if ($stmt->fetch()) {
                             if (password_verify($password, $user_password)) {
+                                $_SESSION['username'] = $username;
                                 header("Location: admin.php");
                                 exit();
                             } else {

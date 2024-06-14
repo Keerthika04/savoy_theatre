@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: index.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -66,17 +74,22 @@
         </div>
 
         <div class="movies_details_admin">
-        <?php
-        session_start();
-        if (isset($_SESSION['alert_message'])) {
-            echo "<div class='alert alert-success mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
-            unset($_SESSION['alert_message']);
-        } ?>
+            <?php
+            if (isset($_SESSION['alert_message'])) {
+                echo "<div class='alert alert-success mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
+                unset($_SESSION['alert_message']);
+            } ?>
             <div class="card-body" id="moviesSection">
                 <div class="movie_head">
                     <h2>
                         MOVIES DETAILS
                     </h2>
+                    <div class="search_box admin_search">
+                        <form action="" method="GET">
+                            <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
                     <button class="addMovie">Add Movie</button>
                 </div>
 
@@ -87,14 +100,28 @@
                         $movieIdToDelete = $_POST["delete_movie_id"];
                         $deleteQuery = $db->query("DELETE FROM movies WHERE movie_id = '$movieIdToDelete'");
                         if ($deleteQuery) {
-                            header("Location: ".$_SERVER['PHP_SELF']);
+                            header("Location: " . $_SERVER['PHP_SELF']);
                             exit();
                         } else {
                             echo "Error deleting movie.";
                         }
                     }
+                    $searchQuery = isset($_GET['search']) ? $db->real_escape_string($_GET['search']) : '';
 
-                    $query = $db->query("SELECT * FROM movies ORDER BY movie_id DESC");
+                    if ($searchQuery) {
+                        $searchSQL = "movie_id LIKE '%$searchQuery%' OR 
+              movie_title LIKE '%$searchQuery%' OR 
+              language LIKE '%$searchQuery%' OR 
+              movie_cast LIKE '%$searchQuery%' OR 
+              genre LIKE '%$searchQuery%' OR 
+              rating LIKE '%$searchQuery%' OR 
+              duration LIKE '%$searchQuery%' OR 
+              released_date LIKE '%$searchQuery%'";
+                        $query = $db->query("SELECT * FROM movies WHERE ($searchSQL) ORDER BY movie_id DESC");
+                    } else {
+
+                        $query = $db->query("SELECT * FROM movies ORDER BY movie_id DESC");
+                    }
 
                     if ($query->num_rows > 0) {
                         while ($row = $query->fetch_assoc()) {
@@ -221,25 +248,24 @@
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById("movieModal");
-    const btn = document.querySelector(".addMovie");
-    const span = document.getElementsByClassName("close")[0];
+        const modal = document.getElementById("movieModal");
+        const btn = document.querySelector(".addMovie");
+        const span = document.getElementsByClassName("close")[0];
 
-    btn.onclick = function() {
-        modal.style.display = "block";
-    }
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
 
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == modal) {
+        span.onclick = function() {
             modal.style.display = "none";
         }
-    }
-});
 
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
 </script>
 
 </html>

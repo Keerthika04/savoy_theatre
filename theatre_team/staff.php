@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: index.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -67,7 +75,6 @@
 
         <div class="staff_details_admin">
             <?php
-            session_start();
             if (isset($_SESSION['alert_message'])) {
                 echo "<div class='alert alert-success mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
                 unset($_SESSION['alert_message']);
@@ -80,40 +87,44 @@
                 </div>
                 <div class="modal-body">
                     <form id="userForm" action="staff.php" method="POST" enctype="multipart/form-data">
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="first_name">First Name:</label>
+                                <input type="text" id="first_name" name="first_name" class="form-control" required placeholder="First Name" autocomplete="off">
+                            </div>
 
-                        <div class="form-group">
-                            <label for="first_name">First Name:</label>
-                            <input type="text" id="first_name" name="first_name" class="form-control" required placeholder="">
+                            <div class="form-group col ml-4">
+                                <label for="last_name">Last Name:</label>
+                                <input type="text" id="last_name" name="last_name" class="form-control" required placeholder="Last Name" autocomplete="off">
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="last_name">Last Name:</label>
-                            <input type="text" id="last_name" name="last_name" class="form-control" required placeholder="Last Name">
-                        </div>
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="phone_no">Phone Number:</label>
+                                <input type="text" id="phone_no" name="phone_no" class="form-control" required placeholder="+94*********" autocomplete="off">
+                            </div>
 
-                        <div class="form-group">
-                            <label for="phone_no">Phone Number:</label>
-                            <input type="text" id="phone_no" name="phone_no" class="form-control" required placeholder="+94*********">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" class="form-control" required placeholder="johndoe@gmail.com">
+                            <div class="form-group col ml-4">
+                                <label for="email">Email:</label>
+                                <input type="email" id="email" name="email" class="form-control" required placeholder="johndoe@gmail.com" autocomplete="off">
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label for="username">Username:</label>
-                            <input type="text" id="username" name="username" class="form-control" required placeholder="Username">
+                            <input type="text" id="username" name="username" class="form-control" required placeholder="Username" autocomplete="off">
                         </div>
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="password">Password:</label>
+                                <input type="password" id="password" name="password" class="form-control" required placeholder="Password">
+                            </div>
 
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" id="password" name="password" class="form-control" required placeholder="Password">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="confirm_password">Confirm Password:</label>
-                            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required placeholder="Password">
+                            <div class="form-group col ml-4">
+                                <label for="confirm_password">Confirm Password:</label>
+                                <input type="password" id="confirm_password" name="confirm_password" class="form-control" required placeholder="Password">
+                            </div>
                         </div>
 
                         <div class="modal-footer">
@@ -236,6 +247,12 @@
                     <h2>
                         STAFF's DETAILS
                     </h2>
+                    <div class="search_box admin_search">
+                        <form action="" method="GET">
+                            <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
                 </div>
                 <div class="row">
                     <?php
@@ -244,13 +261,26 @@
                         $staffIdToDelete = $_POST["delete_staff_id"];
                         $deleteQuery = $db->query("DELETE FROM `users` WHERE user_id = '$staffIdToDelete' AND user_type = 1");
                         if ($deleteQuery) {
-        
                         } else {
                             echo "Error deleting staff.";
                         }
                     }
 
+                    $searchQuery = isset($_GET['search']) ? $db->real_escape_string($_GET['search']) : '';
+
+                    if ($searchQuery) {
+                        $searchSQL = "user_id LIKE '%$searchQuery%' OR 
+                        username LIKE '%$searchQuery%' OR 
+                        password LIKE '%$searchQuery%' OR 
+                        first_name LIKE '%$searchQuery%' OR 
+                        last_name LIKE '%$searchQuery%' OR 
+                        phone_no LIKE '%$searchQuery%' OR 
+                        email LIKE '%$searchQuery%'";
+
+                        $query = $db->query("SELECT * FROM users WHERE  user_type = 1 AND ($searchSQL) ORDER BY user_id DESC");
+                    } else {
                     $query = $db->query("SELECT * FROM users WHERE user_type = 1 ORDER BY user_id DESC");
+                    }
 
                     if ($query->num_rows > 0) {
                         while ($row = $query->fetch_assoc()) {

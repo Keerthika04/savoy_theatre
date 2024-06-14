@@ -18,7 +18,7 @@
         <div class="otp">
             <h1>OTP Verification</h1>
             <form action="#" method="POST">
-                <input type="text" id="otp" class="form-control" name="otp_code" required placeholder="Enter Your OTP">
+                <input type="text" id="otp" class="form-control verification_input" name="otp_code" required placeholder="Enter Your OTP">
                 <input type="submit" value="Verify" name="verify" class="submit-btn">
             </form>
         </div>
