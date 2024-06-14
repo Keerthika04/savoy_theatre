@@ -35,7 +35,7 @@ if ($query->num_rows > 0) {
     }
 }
 
-$query = $db->query("SELECT 	movie_id, 	movie_title, movie_card_poster, duration, released_date FROM movies where 	upcoming_movies = 1");
+$query = $db->query("SELECT movie_id, 	movie_title, movie_card_poster, duration, released_date FROM movies where 	upcoming_movies = 1");
 
 $upcomingMovies = array();
 

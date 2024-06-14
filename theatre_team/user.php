@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: index.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -71,6 +79,12 @@
                     <h2>
                         USER's DETAILS
                     </h2>
+                    <div class="search_box admin_search">
+                        <form action="" method="GET">
+                            <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -87,7 +101,21 @@
                         }
                     }
 
-                    $query = $db->query("SELECT * FROM users WHERE user_type = 2 ORDER BY user_id DESC");
+                    $searchQuery = isset($_GET['search']) ? $db->real_escape_string($_GET['search']) : '';
+
+                    if ($searchQuery) {
+                        $searchSQL = "user_id LIKE '%$searchQuery%' OR 
+                        username LIKE '%$searchQuery%' OR 
+                        password LIKE '%$searchQuery%' OR 
+                        first_name LIKE '%$searchQuery%' OR 
+                        last_name LIKE '%$searchQuery%' OR 
+                        phone_no LIKE '%$searchQuery%' OR 
+                        email LIKE '%$searchQuery%'";
+
+                        $query = $db->query("SELECT * FROM users WHERE  user_type = 2 AND ($searchSQL) ORDER BY user_id DESC");
+                    } else {
+                        $query = $db->query("SELECT * FROM users WHERE user_type = 2 ORDER BY user_id DESC");
+                    }
 
                     if ($query->num_rows > 0) {
                         while ($row = $query->fetch_assoc()) {
@@ -106,7 +134,6 @@
                             echo "<tr><td><strong>Last Name:</strong></td><td>" . $row["last_name"] . "</td></tr>";
                             echo "<tr><td><strong>Phone No:</strong></td><td>" . $row["phone_no"] . "</td></tr>";
                             echo "<tr><td><strong>Email:</strong></td><td>" . $row["email"] . "</td></tr>";
-                            echo "<tr><td><strong>User Type:</strong></td><td> Member </td></tr>";
                             echo "</table>";
                             echo "</div>";
                             echo "</div>";

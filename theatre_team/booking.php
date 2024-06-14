@@ -1,6 +1,13 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: index.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Savoy</title>
@@ -71,6 +78,12 @@
                     <h2>
                         BOOKING DETAILS
                     </h2>
+                    <div class="search_box admin_search">
+                        <form action="" method="GET">
+                            <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
                 </div>
 
                 <div class="row">
@@ -87,7 +100,33 @@
                         }
                     }
 
-                    $query = $db->query(" SELECT booking.booking_id, booking.date AS booking_date, booking.adult, 
+                    $searchQuery = isset($_GET['search']) ? $db->real_escape_string($_GET['search']) : '';
+
+                    if ($searchQuery) {
+                        $searchSQL = "booking.booking_id LIKE '%$searchQuery%' OR 
+                                      booking.adult LIKE '%$searchQuery%' OR 
+                                      booking.children LIKE '%$searchQuery%' OR 
+                                      booking.total LIKE '%$searchQuery%' OR 
+                                      booking.seats LIKE '%$searchQuery%' OR 
+                                      (CASE WHEN booking.confirm_booking = 1 THEN 'Confirmed' ELSE 'Pending' END) LIKE '%$searchQuery%' OR 
+                                      users.username LIKE '%$searchQuery%' OR 
+                                      showtimes.date LIKE '%$searchQuery%' OR 
+                                      showtimes.time LIKE '%$searchQuery%' OR 
+                                      parking.vehicle LIKE '%$searchQuery%' OR 
+                                      movies.movie_id LIKE '%$searchQuery%' OR 
+                                      movies.movie_title LIKE '%$searchQuery%'";
+                        $query = $db->query("SELECT booking.booking_id, booking.adult, 
+                                            booking.children, booking.total, booking.seats, booking.confirm_booking, 
+                                            users.username, showtimes.date AS show_date, showtimes.time AS show_time, 
+                                            parking.vehicle,  movies.movie_id, movies.movie_title
+                                            FROM booking 
+                                            JOIN users ON booking.customer_id = users.user_id
+                                            JOIN showtimes ON booking.showtime_id = showtimes.show_id
+                                            JOIN parking ON booking.parking_id = parking.parking_id 
+                                            JOIN movies ON showtimes.movie_id = movies.movie_id WHERE ($searchSQL) 
+                                            ORDER BY booking_id DESC");
+                    } else {
+                    $query = $db->query(" SELECT booking.booking_id, booking.adult, 
                                             booking.children, booking.total, booking.seats, booking.confirm_booking, 
                                             users.username, showtimes.date AS show_date, showtimes.time AS show_time, 
                                             parking.vehicle,  movies.movie_id, movies.movie_title
@@ -96,6 +135,7 @@
                                             JOIN showtimes ON booking.showtime_id = showtimes.show_id
                                             JOIN parking ON booking.parking_id = parking.parking_id 
                                             JOIN movies ON showtimes.movie_id = movies.movie_id ORDER BY booking_id DESC");
+                    }
 
                     if ($query->num_rows > 0) {
                         while ($row = $query->fetch_assoc()) {
@@ -111,7 +151,6 @@
 
                             echo "<table class='table table-bordered'>";
                             echo "<tr><td><strong>Booked By:</strong></td><td>" . $row["username"] . "</td></tr>";
-                            echo "<tr><td><strong>Booking Date:</strong></td><td>" . $row["booking_date"] . "</td></tr>";
                             echo "<tr><td><strong>Show Date:</strong></td><td>" . $row["show_date"] . "</td></tr>";
                             echo "<tr><td><strong>Show Time:</strong></td><td>" . $row["show_time"] . "</td></tr>";
                             echo "<tr><td><strong>Vehicle:</strong></td><td>" . $row["vehicle"] . "</td></tr>";
