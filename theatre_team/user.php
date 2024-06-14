@@ -23,7 +23,7 @@ if (!isset($_SESSION['username']) || $_SESSION['user_type'] != 0) {
     <link rel="stylesheet" href="./css/admin_dashboard.css" />
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-
+ 
 <body>
     <div class="flex">
         <div class="sidebar">
