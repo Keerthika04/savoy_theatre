@@ -246,7 +246,7 @@
     display: flex;
     align-items: center;
 }
-.verification_input {
+.verification_input { 
     width: 300px;
     height: 100%;
     padding: 12px;
