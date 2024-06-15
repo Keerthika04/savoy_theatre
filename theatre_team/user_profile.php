@@ -78,7 +78,7 @@ if ($stmt = $db->prepare($sql)) {
                     </li>
                     <?php }; ?>
                     <li>
-                        <a href="user_profile.php">
+                        <a href="user_profile.php" class="active">
                             <span>Profile</span>
                         </a>
                     </li>

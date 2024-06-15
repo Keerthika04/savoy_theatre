@@ -82,7 +82,8 @@
 .booking_details_admin,
 .user_details_admin,
 .staff_details_admin,
-.staff_user_profile {
+.staff_user_profile,
+.promotion_admin {
     top: 0;
     background: #f7f7f7;
     border-top-left-radius: 12px;
@@ -138,7 +139,8 @@
 
 .addMovie,
 .addShow,
-.addNewStaff {
+.addNewStaff,
+.addPromotion {
     background-color: var(--darkBg);
     color: var(--white);
     padding: 0.5rem 1rem;
@@ -151,7 +153,8 @@
 
 .addMovie:hover,
 .addShow:hover
-.addNewStaff:hover {
+.addNewStaff:hover,
+.addPromotion:hover {
     background-color: var(--white);
     color: var(--darkBg);
 }
@@ -160,7 +163,8 @@
 .showtime_head,
 .booking_head,
 .user_head,
-.staff_head {
+.staff_head,
+.promotion_head {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -172,7 +176,8 @@
 .showtime_head h2,
 .booking_head h2,
 .user_head h2,
-.staff_head h2 {
+.staff_head h2,
+.promotion_head h2{
     font-size: 1.5rem;
     color: var(--darkBg);
     margin-bottom: 0;
