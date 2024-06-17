@@ -4,13 +4,13 @@ require 'db_connection.php';
 
 if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
     if (isset($_SESSION['user_id'])) {
-      header("Location: user_profile.php");
-      exit();
+        header("Location: user_profile.php");
+        exit();
     } else {
-      header("Location: login.php");
-      exit();
+        header("Location: login.php");
+        exit();
     }
-  }
+}
 
 $searchQuery = isset($_GET['search']) ? $db->real_escape_string($_GET['search']) : '';
 
@@ -33,6 +33,8 @@ if ($query->num_rows > 0) {
     while ($row = $query->fetch_assoc()) {
         $movies[] = $row;
     }
+} else {
+    $_SESSION['search_alert_message'] = "Ops! That Movie is not available!";
 }
 
 $query = $db->query("SELECT movie_id, 	movie_title, movie_card_poster, duration, released_date FROM movies where 	upcoming_movies = 1");
@@ -55,7 +57,6 @@ if ($query->num_rows > 0) {
     <link rel="icon" href="../Images/favicon.png" type="image/png" />
     <link rel="stylesheet" href="../css/styles.css" />
     <link rel="stylesheet" href="../css/movies.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -73,9 +74,8 @@ if ($query->num_rows > 0) {
             </ul>
             <div class="search_box">
                 <form action="" method="GET">
-                    <input type="text" name="search" placeholder="Search"
-                        value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>"/>
-                        <button type="submit"><i class="fas fa-search"></i></button>
+                    <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
+                    <button type="submit"><i class="fas fa-search"></i></button>
                 </form>
             </div>
         </div>
@@ -95,7 +95,11 @@ if ($query->num_rows > 0) {
     <section>
         <div class="movie-container">
             <?php
-            foreach ($movies as $movie): ?>
+            if (isset($_SESSION['search_alert_message'])) {
+                echo "<h2 style='color:#fff; margin-top:1rem'>" . htmlspecialchars($_SESSION['search_alert_message']) . "</h2>";
+                unset($_SESSION['search_alert_message']);
+            }
+            foreach ($movies as $movie) : ?>
                 <?php $imageURL = '../uploaded_card_images/' . $movie["movie_card_poster"]; ?>
                 <div class="movie-card onClick" data-movie-id="<?= htmlspecialchars($movie["movie_id"]); ?>">
                     <img src="<?= htmlspecialchars($imageURL) ?>" alt="<?= htmlspecialchars($movie['movie_title']) ?>">
@@ -119,17 +123,15 @@ if ($query->num_rows > 0) {
             <div class="swiper upcoming_movies tranding-slider contents">
                 <h1>Upcoming Movies</h1>
                 <div class="swiper-wrapper">
-                    <?php foreach ($upcomingMovies as $movie): ?>
+                    <?php foreach ($upcomingMovies as $movie) : ?>
                         <?php $imageURL = '../uploaded_card_images/' . $movie["movie_card_poster"]; ?>
-                        <div class="tranding-slide movies_slider swiper-slide onClick"
-                            data-movie-id="<?= htmlspecialchars($movie["movie_id"]); ?>">
+                        <div class="tranding-slide movies_slider swiper-slide onClick" data-movie-id="<?= htmlspecialchars($movie["movie_id"]); ?>">
                             <img src="<?= $imageURL ?>" alt="<?= $movie['movie_title'] ?>" class="upcomingImg">
                             <div class="movie-info">
                                 <h2><?= $movie['movie_title'] ?></h2>
                                 <p><?= $movie['duration'] ?></p>
                                 <p>Release on <?= $movie['released_date'] ?></p>
-                                <a href="php/booking.php?movie=<?php echo htmlspecialchars($movie["movie_id"]); ?>"
-                                    class="buy-tickets"> <span></span><span></span><span></span>
+                                <a href="php/booking.php?movie=<?php echo htmlspecialchars($movie["movie_id"]); ?>" class="buy-tickets"> <span></span><span></span><span></span>
                                     <span></span>Buy Tickets</a>
                             </div>
                         </div>
@@ -204,9 +206,9 @@ if ($query->num_rows > 0) {
 </body>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.onClick').forEach(function (slide) {
-            slide.addEventListener('click', function (event) {
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.onClick').forEach(function(slide) {
+            slide.addEventListener('click', function(event) {
                 if (!event.target.closest('.buy-tickets')) {
                     var movieId = this.getAttribute('data-movie-id');
                     window.location.href = 'movie_details.php?movie=' + movieId;
@@ -214,7 +216,7 @@ if ($query->num_rows > 0) {
             });
         });
     });
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         let upcomingSlider = new Swiper('.upcoming_movies', {
             effect: 'coverflow',
             centeredSlides: true,
@@ -232,7 +234,7 @@ if ($query->num_rows > 0) {
                 prevEl: '.swiper-button-prev',
             },
             on: {
-                slideChange: function () {
+                slideChange: function() {
                     let upcomingImg = this.slides[this.activeIndex].querySelector('.upcomingImg');
                     let backgroundImage = 'url(' + upcomingImg.src + ')';
                     document.querySelector('.blurry-bg').style.backgroundImage = backgroundImage;

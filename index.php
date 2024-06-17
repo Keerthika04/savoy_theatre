@@ -2,56 +2,41 @@
 session_start();
 require 'php/db_connection.php';
 
+// Check if the action is to check the session
 if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
+  // If the user is logged in then it will redirect to the user profile page
   if (isset($_SESSION['user_id'])) {
     header("Location: php/user_profile.php");
     exit();
-  } else {
+  } else { //else it will take to login page
     header("Location: php/login.php");
     exit();
   }
 }
 
-$searchQuery = isset($_GET['search']) ? $db->real_escape_string($_GET['search']) : '';
 
-if ($searchQuery) {
-
-  $searchSQL = "movie_id LIKE '%$searchQuery%' OR 
-              movie_title LIKE '%$searchQuery%' OR 
-              language LIKE '%$searchQuery%' OR 
-              movie_cast LIKE '%$searchQuery%' OR 
-              genre LIKE '%$searchQuery%' OR 
-              rating LIKE '%$searchQuery%' OR 
-              duration LIKE '%$searchQuery%' OR 
-              released_date LIKE '%$searchQuery%'";
-  $query = $db->query("SELECT movie_id, movie_title, movie_card_poster, duration, released_date FROM movies WHERE current_movies = 1 AND ($searchSQL)");
-} else {
-  $query = $db->query("SELECT movie_id, movie_title, movie_card_poster, duration, released_date FROM movies WHERE current_movies = 1");
-}
-
-$movies = array();
-if ($query->num_rows > 0) {
-  while ($row = $query->fetch_assoc()) {
-    $movies[] = $row;
-  }
-}
-
+// Fetches the current movies from the database
 $query = $db->query("SELECT movie_id, movie_title, movie_card_poster, duration, released_date FROM movies where 	current_movies = 1");
 
+// Initialize an empty array to store the current movies
 $currentMovies = array();
 
 if ($query->num_rows > 0) {
   while ($row = $query->fetch_assoc()) {
+    // Add the movie to the movies array
     $currentMovies[] = $row;
   }
 }
 
+// Fetches the upcoming movies from the database
 $query = $db->query("SELECT 	movie_id, 	movie_title, movie_card_poster, duration, released_date FROM movies where 	upcoming_movies = 1");
 
+// Initialize an empty array to store the upcoming movies
 $upcomingMovies = array();
 
 if ($query->num_rows > 0) {
   while ($row = $query->fetch_assoc()) {
+    // Add the movie to the movies array
     $upcomingMovies[] = $row;
   }
 }
@@ -72,6 +57,7 @@ if ($query->num_rows > 0) {
 </head>
 
 <body>
+  <!-- Navigation bar -->
   <nav class="navbar flex_align_center" id="navbar">
     <div class="left_nav">
       <div class="logo">
@@ -82,15 +68,16 @@ if ($query->num_rows > 0) {
         <li><a href="./php/movies.php">Movies</a></li>
         <li><a href="./php/theatre_info.php">Theatre</a></li>
       </ul>
+      <!-- Search -->
       <div class="search_box">
         <form action="./php/movies.php" method="GET">
-          <input type="text" name="search" placeholder="Search"
-            value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
+          <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
           <button type="submit"><i class="fas fa-search"></i></button>
         </form>
       </div>
     </div>
     <div class="right_nav">
+      <!-- Buy Tickets -->
       <a href="./php/booking.php" class="buy_tickets">
         <img src="Images/tickets.png" alt="Ticket Icon" class="ticket_icon" />
         Buy Movie Tickets
@@ -98,7 +85,7 @@ if ($query->num_rows > 0) {
       <div class="menu_icon" onclick="toggleMenu()">
         <i class="fas fa-bars"></i>
       </div>
-
+      <!-- User Profile -->
       <a href="?action=check_session"><i class="fa-solid fa-user user_profile"></i></a>
     </div>
   </nav>
@@ -107,23 +94,22 @@ if ($query->num_rows > 0) {
     <div class="swiper-container">
       <div class="swiper-wrapper">
         <?php
-
+        // Fetches banner images, movie titles and movie id for the slider
         $query = $db->query("SELECT banner.banner_poster, movie_title, movies.movie_id FROM banner join movies ON banner.movie_id = movies.movie_id");
 
         if ($query->num_rows > 0) {
           while ($row = $query->fetch_assoc()) {
             $imageURL = 'uploaded_banner_images/' . $row["banner_poster"];
-            ?>
+        ?>
             <div class="swiper-slide">
               <img src="<?php echo $imageURL; ?>" alt="<?php echo $imageURL; ?>" />
               <div class="banner_text">
                 <h1><?php echo htmlspecialchars($row["movie_title"]); ?></h1>
                 <a href="php/booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>">Buy Tickets</a>
-                <a href="php/movie_details.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>"
-                  class="border_btn">More Info</a>
+                <a href="php/movie_details.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>" class="border_btn">More Info</a>
               </div>
             </div>
-          <?php }
+        <?php }
         } ?>
       </div>
 
@@ -131,6 +117,7 @@ if ($query->num_rows > 0) {
     </div>
   </section>
 
+  <!-- Currently playing movies slider -->
   <section class="movies_slider">
     <div class="container">
       <div class="blurry-bg"></div>
@@ -138,10 +125,10 @@ if ($query->num_rows > 0) {
       <div class="swiper available tranding-slider contents">
         <h1>Now Playing Movies</h1>
         <div class="swiper-wrapper">
-          <?php foreach ($currentMovies as $movie): ?>
+          <!-- Loop through current movies -->
+          <?php foreach ($currentMovies as $movie) : ?>
             <?php $imageURL = 'uploaded_card_images/' . $movie["movie_card_poster"]; ?>
-            <div class="tranding-slide movies_slider swiper-slide"
-              data-movie-id="<?= htmlspecialchars($movie["movie_id"]); ?>">
+            <div class="tranding-slide movies_slider swiper-slide" data-movie-id="<?= htmlspecialchars($movie["movie_id"]); ?>">
               <img src="<?= $imageURL ?>" alt="<?= $movie['movie_title'] ?>">
               <div class="movie-info">
                 <h2><?= $movie['movie_title'] ?></h2>
@@ -158,6 +145,7 @@ if ($query->num_rows > 0) {
     </div>
   </section>
 
+  <!-- Upcoming playing movies slider -->
   <section class="upcoming_movie_slider">
     <div class="container">
       <div class="blurry-bg2"></div>
@@ -165,10 +153,10 @@ if ($query->num_rows > 0) {
       <div class="swiper upcoming_movies tranding-slider contents">
         <h1>Upcoming Movies</h1>
         <div class="swiper-wrapper">
-          <?php foreach ($upcomingMovies as $movie): ?>
+          <!-- Loop through upcoming movies -->
+          <?php foreach ($upcomingMovies as $movie) : ?>
             <?php $imageURL = 'uploaded_card_images/' . $movie["movie_card_poster"]; ?>
-            <div class="tranding-slide movies_slider swiper-slide"
-              data-movie-id="<?= htmlspecialchars($movie["movie_id"]); ?>">
+            <div class="tranding-slide movies_slider swiper-slide" data-movie-id="<?= htmlspecialchars($movie["movie_id"]); ?>">
               <img src="<?= $imageURL ?>" alt="<?= $movie['movie_title'] ?>" class="upcomingImg">
               <div class="movie-info">
                 <h2><?= $movie['movie_title'] ?></h2>
@@ -185,6 +173,7 @@ if ($query->num_rows > 0) {
     </div>
   </section>
 
+  <!-- Footer -->
   <div class="links">
     <div class="column">
       <h2>Our Company</h2>
@@ -253,7 +242,8 @@ if ($query->num_rows > 0) {
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function() {
+    // Initialize Swiper for available (now playing) movies
     let TrandingSlider = new Swiper('.available', {
       effect: 'coverflow',
       centeredSlides: true,
@@ -271,13 +261,14 @@ if ($query->num_rows > 0) {
         prevEl: '.swiper-button-prev',
       },
       on: {
-        slideChange: function () {
+        slideChange: function() {
           let activeImage = this.slides[this.activeIndex].querySelector('img');
           let backgroundImage = 'url(' + activeImage.src + ')';
           document.querySelector('.blurry-bg').style.backgroundImage = backgroundImage;
         },
       },
     });
+    // Initialize Swiper for upcoming movies
     let upcomingSlider = new Swiper('.upcoming_movies', {
       effect: 'coverflow',
       centeredSlides: true,
@@ -295,8 +286,7 @@ if ($query->num_rows > 0) {
         prevEl: '.swiper-button-prev',
       },
       on: {
-        slideChange: function () {
-
+        slideChange: function() {
           let upcomingImg = this.slides[this.activeIndex].querySelector('.upcomingImg');
           let backgroundImage = 'url(' + upcomingImg.src + ')';
           document.querySelector('.blurry-bg2').style.backgroundImage = backgroundImage;
@@ -304,9 +294,9 @@ if ($query->num_rows > 0) {
       },
     });
   });
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.tranding-slide').forEach(function (slide) {
-      slide.addEventListener('click', function (event) {
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.tranding-slide').forEach(function(slide) {
+      slide.addEventListener('click', function(event) {
         if (!event.target.closest('.buy-tickets')) {
           var movieId = this.getAttribute('data-movie-id');
           window.location.href = 'php/movie_details.php?movie=' + movieId;
