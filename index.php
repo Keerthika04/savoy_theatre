@@ -115,7 +115,7 @@ if ($query->num_rows > 0) {
             $imageURL = 'uploaded_banner_images/' . $row["banner_poster"];
             ?>
             <div class="swiper-slide">
-              <img src="<?php echo $imageURL; ?>" alt="" />
+              <img src="<?php echo $imageURL; ?>" alt="<?php echo $imageURL; ?>" />
               <div class="banner_text">
                 <h1><?php echo htmlspecialchars($row["movie_title"]); ?></h1>
                 <a href="php/booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>">Buy Tickets</a>

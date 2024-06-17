@@ -56,7 +56,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_session') {
         <div class="swiper-container">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                    <img src="../Images/Theatre.jpg" alt="" />
+                    <img src="../Images/Theatre.jpg" alt="TheatreBG" />
                     <div class="banner_text">
                         <h1>About Savoy</h1>
                         <p>Where You Can Find Better Movie Experience</p>

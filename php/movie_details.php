@@ -115,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_feedback'])) {
             <div class="swiper-wrapper">
                 <div class="swiper-slide movie_poster">
                     <div class="black_overlay"></div>
-                    <img src="<?php echo $imageURL; ?>" alt="" />
+                    <img src="<?php echo $imageURL; ?>" alt="<?php echo $imageURL; ?>" />
                     <div class="banner_text">
                         <h1 class="with_language"><?php echo htmlspecialchars($row["movie_title"]); ?></h1>
                         <h3>Language - <?php echo htmlspecialchars($row["language"]); ?></h3>

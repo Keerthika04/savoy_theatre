@@ -1,12 +1,16 @@
 <?php
 session_start();
 require 'db_connection.php';
+
+// Redirect users to login page if the user is not logged in
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['alert_message'] = "You have to login to book!";
     $_SESSION['booking'] = true;
     header("Location: login.php");
     exit();
 }
+
+// Fetch all movies from the database
 function getMovies($db)
 {
     $sql = "SELECT movie_id, movie_title FROM movies where current_movies = 1";
@@ -21,6 +25,7 @@ function getMovies($db)
     return $movies;
 }
 
+// To get details of a specific movie
 function getMovieDetails($db, $movie_id)
 {
     $sql = "SELECT * FROM movies WHERE movie_id = ?";
@@ -33,6 +38,7 @@ function getMovieDetails($db, $movie_id)
     return $movie;
 }
 
+// Function to get showtimes for a specific movie
 function getShowtimes($db, $movie_id)
 {
     $sql = "SELECT s.date, s.time FROM showtimes s WHERE s.movie_id = ? ORDER BY s.date, s.time";
@@ -48,16 +54,19 @@ function getShowtimes($db, $movie_id)
     return $showtimes;
 }
 
+// Check if a movie is selected via POST request and redirect to booking page
 if (isset($_POST['movie'])) {
     header("Location: booking.php?movie=" . urlencode($_POST['movie']));
     exit();
 }
 
+// Retrieve movie ID from query parameter or default to first movie if none is selected
 $movie_id = $_GET['movie'] ?? null;
 $all_movies = getMovies($db);
 $selected_movie = null;
 $showtimes = [];
 
+// Determines which movie details to display based on movie ID
 if (!$movie_id) {
     if (!empty($all_movies)) {
         $movie_id = $all_movies[0]['movie_id'];
@@ -98,9 +107,12 @@ if (!$movie_id) {
 </head>
 
 <body style="background-image: url('<?php echo $imageURL; ?>');">
+    <!-- Background Image of Movie Poster -->
     <div id="movieBackground" style="background: inherit;" class="movie_booking_page">
     </div>
     <div class="black_overlay"></div>
+
+    <!-- Navigation bar -->
     <nav class="contents">
         <div class="top_nav">
             <a href="../index.php"><i class="fa-solid fa-circle-chevron-left" style="color: #ffffff; font-size: 1.5rem;"></i></a>
@@ -127,6 +139,8 @@ if (!$movie_id) {
             </div>
         </div>
     </nav>
+
+    <!-- Movie details section -->
     <?php if ($selected_movie) : ?>
         <div class="movie contents">
             <h1><?php echo htmlspecialchars($selected_movie['movie_title']); ?></h1>
@@ -135,13 +149,14 @@ if (!$movie_id) {
             <p><?php echo htmlspecialchars($selected_movie['storyplot']); ?></p>
             <br>
             <div class="movie_bg">
+                <!-- Showtimes section -->
                 <?php if (!empty($selected_movie['showtimes'])) : ?>
                     <h4>Show Available Dates</h4>
                     <div class="radio-btn-group">
                         <?php foreach ($selected_movie['showtimes'] as $date => $showtimes) : ?>
                             <div class="ticket">
                                 <input type="radio" id="date_<?php echo htmlspecialchars($date); ?>" name="showdate" value="<?php echo htmlspecialchars($date); ?>" onclick="showShowtimes('<?php echo htmlspecialchars($date); ?>')">
-                                <img src="../Images/ticket.png" alt="">
+                                <img src="../Images/ticket.png" alt="ticketPng">
                                 <label for="date_<?php echo htmlspecialchars($date); ?>"><?php echo htmlspecialchars($date); ?></label>
                             </div>
                         <?php endforeach; ?>
@@ -160,6 +175,9 @@ if (!$movie_id) {
                         <?php endforeach; ?>
                     </div>
             </div>
+
+            <!-- Number of adults and children -->
+            <h5 class="mt-5">Fill the no of adults and children before selecting seats!</h4>
             <div class="count">
                 <div class="form-group">
                     <label for="adults">Number of Adults:</label>
@@ -170,6 +188,8 @@ if (!$movie_id) {
                     <input type="number" id="children" class="form-control" min="0" value="0" onchange="validateTotal()">
                 </div>
             </div>
+
+            <!-- Seat selection section -->
             <div id="normalSeats">
                 <h3> - Normal Seats - </h3>
             </div>
@@ -180,6 +200,7 @@ if (!$movie_id) {
                 <h3>- Balcony Seats -</h3>
             </div>
 
+            <!-- Parking selection -->
             <div class="parking">
                 <div class="form-group">
                     <select id="parking" class="form-control">
@@ -190,6 +211,8 @@ if (!$movie_id) {
                     </select>
                 </div>
             </div>
+
+            <!-- Book button -->
             <div class="mt-3">
                 <button class="btn btn-light bookingBtn" id="bookButton" onclick="bookShowtime()">Book Now
                     <span></span>
@@ -203,7 +226,8 @@ if (!$movie_id) {
         <?php endif; ?>
         </div>
     <?php endif; ?>
-    <!-- Booking Modal -->
+
+    <!-- Booking Details Modal -->
     <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -232,11 +256,13 @@ if (!$movie_id) {
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
+        // Stores selected showtime, seats, and booked seats
         let selectedShowtime = null;
         let selectedSeats = [];
         let bookedSeats = [];
         let totalSeats = 0;
 
+        // Displays showtimes for a selected date
         function showShowtimes(date) {
             const showtimeLists = document.querySelectorAll('.showtime-list');
             showtimeLists.forEach(list => {
@@ -249,11 +275,12 @@ if (!$movie_id) {
             }
         }
 
+        // Set the selected showtime
         function setSelectedShowtime(showtime) {
             selectedShowtime = showtime;
         }
 
-
+        // Validate total number of seats (adults + children)
         function validateTotal() {
             const adults = parseInt(document.getElementById('adults').value) || 0;
             const children = parseInt(document.getElementById('children').value) || 0;
@@ -267,6 +294,7 @@ if (!$movie_id) {
         }
 
         $(document).ready(function() {
+            // Function to create seats based on section and count
             function createSeats(section, count, prefix) {
                 let rows = Math.ceil(count / 15);
                 let seatNumber = 1;
@@ -282,28 +310,10 @@ if (!$movie_id) {
                 }
             }
 
+            // Creates seats for normal, ODC, and balcony sections
             createSeats($('#normalSeats'), 150, 'A');
             createSeats($('#odcSeats'), 150, 'B');
             createSeats($('#balconySeats'), 200, 'C');
-
-            function updateBookedSeats(bookedSeats) {
-                $('.seat').each(function() {
-                    const seatNumber = $(this).attr('data-seat-number');
-                    if (bookedSeats.includes(seatNumber)) {
-                        $(this).addClass('booked').off('click');
-                    } else {
-                        $('.seat').on('click', function() {
-                            if (!$(this).hasClass('selected') && selectedSeats.length < totalSeats) {
-                                $(this).addClass('selected');
-                                selectedSeats.push(parseInt($(this).text()));
-                            } else if ($(this).hasClass('selected')) {
-                                $(this).removeClass('selected');
-                                selectedSeats = selectedSeats.filter(seat => seat !== parseInt($(this).text()));
-                            }
-                        });
-                    }
-                });
-            }
 
             $('#adults, #children').on('input', function() {
                 totalSeats = parseInt($('#adults').val()) + parseInt($('#children').val());
@@ -316,36 +326,7 @@ if (!$movie_id) {
                 }
             });
 
-            function fetchBookedSeats(date, time) {
-                $.ajax({
-                    url: 'getBookedSeats.php',
-                    type: 'POST',
-                    data: {
-                        date: date,
-                        time: time
-                    },
-                    success: function(response) {
-                        bookedSeats = JSON.parse(response);
-                        updateBookedSeats(bookedSeats);
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Error fetching booked seats: ' + error);
-                    }
-                });
-            }
-
-            $('#movieSelect').on('change', function() {
-                const date = $('input[name="showdate"]:checked').val();
-                const time = $('input[name="showtime"]:checked').val();
-                fetchBookedSeats(date, time);
-            });
-
-            $('input[name="showdate"], input[name="showtime"]').on('change', function() {
-                const date = $('input[name="showdate"]:checked').val();
-                const time = $('input[name="showtime"]:checked').val();
-                fetchBookedSeats(date, time);
-            });
-
+            //  Fetches booked seats for a selected date and time
             function fetchBookedSeats(date, time) {
                 $.ajax({
                     url: 'getBookedSeats.php',
@@ -365,6 +346,7 @@ if (!$movie_id) {
                 });
             }
 
+            // Updates booked seats based on AJAX response
             function updateBookedSeats() {
                 $('.seat').each(function() {
                     const seatNumber = $(this).attr('data-seat-number');
@@ -387,9 +369,23 @@ if (!$movie_id) {
                     }
                 });
             }
+
+            // Event handlers for movie selection, show date, and show time
+            $('#movieSelect').on('change', function() {
+                const date = $('input[name="showdate"]:checked').val();
+                const time = $('input[name="showtime"]:checked').val();
+                fetchBookedSeats(date, time);
+            });
+
+            $('input[name="showdate"], input[name="showtime"]').on('change', function() {
+                const date = $('input[name="showdate"]:checked').val();
+                const time = $('input[name="showtime"]:checked').val();
+                fetchBookedSeats(date, time);
+            });
+
         });
 
-
+        // Handles booking of showtime
         function bookShowtime() {
             const adults = parseInt(document.getElementById('adults').value) || 0;
             const children = parseInt(document.getElementById('children').value) || 0;
@@ -399,6 +395,7 @@ if (!$movie_id) {
             if (selectedShowtime) {
                 if (total > 0 && total <= 10) {
                     if (selectedSeats.length == totalSeats) {
+                        // Display booking modal with selected details
                         const movie = document.getElementById('movieSelect').options[document.getElementById('movieSelect').selectedIndex].text;
                         const date = document.querySelector('input[name="showdate"]:checked').value;
                         const time = document.querySelector('input[name="showtime"]:checked').value;
@@ -430,6 +427,7 @@ if (!$movie_id) {
             }
         }
 
+        // Calculates the total price
         function calculateTotalPrice(adults, children, parking) {
             const adultPrice = 250;
             const childPrice = 150;
@@ -450,8 +448,8 @@ if (!$movie_id) {
             return (adults * adultPrice) + (children * childPrice) + parkingPrice;
         }
 
-
         $('#payNow').on('click', function() {
+            // Retrieves booking details from modal
             const name = $('#name').val();
             const mobile = $('#mobile').val();
             const movie = $('#modalMovie').text();
@@ -463,6 +461,7 @@ if (!$movie_id) {
             const parking = $('#modalParking').text();
             const totalPrice = $('#modalTotalPrice').text();
 
+            // AJAX request to book.php to complete booking process
             $.ajax({
                 url: 'book.php',
                 type: 'POST',

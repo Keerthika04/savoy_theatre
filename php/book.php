@@ -48,9 +48,9 @@ $row = $result->fetch_assoc();
 $showID = $row['show_id'];
 $stmt->close();
 
-$query = "INSERT INTO booking (booking_id, customer_id, showtime_id, date, adult, children, total, seats, parking_id) VALUES (?,?,?,?,?,?,?,?,?)";
+$query = "INSERT INTO booking (booking_id, customer_id, showtime_id, adult, children, total, seats, parking_id) VALUES (?,?,?,?,?,?,?,?)";
 $stmt = $db->prepare($query);
-$stmt->bind_param("sssssssss", $newID, $_SESSION['user_id'], $showID, $date, $adults, $children, $totalPrice, $seats, $newParkingID);
+$stmt->bind_param("ssssssss", $newID, $_SESSION['user_id'], $showID, $adults, $children, $totalPrice, $seats, $newParkingID);
 $stmt->execute();
 
 if ($stmt->affected_rows > 0) {
