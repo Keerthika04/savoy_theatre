@@ -54,7 +54,6 @@ if (isset($_POST["verify"])) {
 <?php
     } else {
 
-
         $first_name = $_SESSION['user_data']['first_name'];
         $last_name = $_SESSION['user_data']['last_name'];
         $username = $_SESSION['user_data']['username'];

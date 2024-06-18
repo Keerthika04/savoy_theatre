@@ -63,6 +63,7 @@ if (isset($_POST["verify"])) {
             $new_customer_id = "c" . str_pad($num, 4, "0", STR_PAD_LEFT);
         }
 
+        // Insert user data into the database
         $sql = "INSERT INTO users (user_id, first_name, last_name, username, password, email, phone_no, user_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($sql);
 
@@ -70,13 +71,16 @@ if (isset($_POST["verify"])) {
 
         if ($stmt->execute()) {
 
+            // Clear and destroy session variables
             session_unset();
             session_destroy();
             session_start();
 
+            // Redirect to login page with success message
             $_SESSION['success_alert_message'] = "Successfully Registered!";
             header("Location: login.php");
         } else {
+            // Display error if database insertion fails
             echo "<div class='alert alert-danger mt-3'>Error: " . $stmt->error . "</div>";
         }
 
