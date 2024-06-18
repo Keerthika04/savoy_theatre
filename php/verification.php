@@ -30,6 +30,7 @@
 session_start();
 require 'db_connection.php';
 
+// Chceks the Input OTP code with session OTP
 if (isset($_POST["verify"])) {
     $otp = $_SESSION['otp'];
     $email = $_SESSION['mail'];
@@ -42,8 +43,7 @@ if (isset($_POST["verify"])) {
         </script>
 <?php
     } else {
-
-
+        // Retrieves data from user_data array session
         $first_name = $_SESSION['user_data']['first_name'];
         $last_name = $_SESSION['user_data']['last_name'];
         $username = $_SESSION['user_data']['username'];
@@ -52,7 +52,8 @@ if (isset($_POST["verify"])) {
         $phone_number = $_SESSION['user_data']['phone_number'];
         $user_type = $_SESSION['user_data']['user_type'];
 
-        $query = $db->query("SELECT user_id FROM users ORDER BY user_id DESC LIMIT 1");
+        // Generates new user_id
+        $query = $db->query("SELECT user_id FROM users WHERE user_id LIKE 'c%' ORDER BY user_id DESC LIMIT 1");
         $new_customer_id = "c0001";
 
         if ($query->num_rows > 0) {
@@ -68,6 +69,11 @@ if (isset($_POST["verify"])) {
         $stmt->bind_param("sssssssi", $new_customer_id, $first_name, $last_name, $username, $password, $email, $phone_number, $user_type);
 
         if ($stmt->execute()) {
+
+            session_unset();
+            session_destroy();
+            session_start();
+
             $_SESSION['success_alert_message'] = "Successfully Registered!";
             header("Location: login.php");
         } else {

@@ -14,6 +14,7 @@
 
 <body>
     <div class="register-container">
+        <!-- Registration form -->
         <div class="register-box">
             <h2 class="register-title">Register</h2>
             <form id="registrationForm" action="register.php" method="post">
@@ -72,8 +73,10 @@
                 $phone_number = $_POST['phone_number'];
                 $user_type = 2;
 
+                // Stores the error if it encountered any
                 $errors = [];
 
+                // Check if username already exists
                 $sql = "SELECT username FROM users";
                 $result = $db->query($sql);
 
@@ -85,6 +88,7 @@
                     }
                 }
 
+                // Validates first name and last name should only have letters
                 if (!preg_match("/^[a-zA-Z]+$/", $first_name)) {
                     $errors[] = "First name should contain only letters!";
                 }
@@ -93,34 +97,40 @@
                     $errors[] = "Last name should contain only letters!";
                 }
 
+                // Validates the phone number, it should have 12 numbers with country code and numbers only
                 if (!preg_match("/^\+[0-9]+$/", $phone_number) || !(strlen($phone_number) == 12)) {
                     $errors[] = "Phone number should contain only 12 numbers and include the country code!";
                 }
 
+                // Validates the password, it should be 8 characters long and should have 1 Caps and Symbol
                 if (strlen($password) < 8 || !preg_match("/[A-Z]/", $password) || !preg_match("/\W/", $password)) {
                     $errors[] = "Password should be at least 8 characters long, include at least one uppercase letter and one special character.";
                 }
 
+                // Checks whether the password and confirm password matches
                 if ($password !== $confirm_password) {
                     $errors[] = "Passwords do not match! Try again!";
                 }
 
+                  // If there are no errors, then proceed with mailing OTP 
                 if (empty($errors)) {
 
                     $otp = rand(100000, 999999);
                     $_SESSION['otp'] = $otp;
                     $_SESSION['mail'] = $email;
 
+                    // Send OTP through email using PHPMailer
                     require "Mail/phpmailer/PHPMailerAutoload.php";
                     $mail = new PHPMailer(true);
 
+                    // Set to 2 for debug info
                     $mail->SMTPDebug = 2;
 
                     $mail->isSMTP();
-                    $mail->Host = 'smtp.gmail.com';
-                    $mail->Port = 587;
+                    $mail->Host = 'smtp.gmail.com'; // SMTP host
+                    $mail->Port = 587; // SMTP port
                     $mail->SMTPAuth = true;
-                    $mail->SMTPSecure = 'tls';
+                    $mail->SMTPSecure = 'tls'; // Enable TLS encryption
 
                     $mail->Username = 'jeyandrankeerthika5@gmail.com';
                     $mail->Password = 'mojfidopvduiutfs';
@@ -148,6 +158,7 @@
                         <script>
                             <?php
                             $password_hashed = password_hash($_POST['password'], PASSWORD_BCRYPT);
+                            // To execute insert statement after verification
                             $user_data = array(
                                 'first_name' => $first_name,
                                 'last_name' => $last_name,

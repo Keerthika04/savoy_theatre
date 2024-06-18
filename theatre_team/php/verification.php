@@ -63,7 +63,7 @@ if (isset($_POST["verify"])) {
         $phone_number = $_SESSION['user_data']['phone_number'];
         $user_type = $_SESSION['user_data']['user_type'];
 
-        $query = $db->query("SELECT user_id FROM users ORDER BY user_id DESC LIMIT 1");
+        $query = $db->query("SELECT user_id FROM users WHERE user_id LIKE 's%' ORDER BY user_id DESC LIMIT 1");
         $new_customer_id = "s0001";
 
         if ($query->num_rows > 0) {
