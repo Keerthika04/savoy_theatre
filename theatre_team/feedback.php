@@ -1,5 +1,7 @@
 <?php
 session_start();
+
+// Made sure only authorized users have access and can't be accessed by url change
 if (!isset($_SESSION['username']) || $_SESSION['user_type'] != 0) {
     if ($_SESSION['user_type'] != 0) {
         header("Location: movies.php");

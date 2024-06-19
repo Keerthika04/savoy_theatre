@@ -267,6 +267,20 @@ if ($query->num_rows > 0) {
           document.querySelector('.blurry-bg').style.backgroundImage = backgroundImage;
         },
       },
+      breakpoints: {
+        // when window width is >= 1024px (PC)
+        1024: {
+          slidesPerView: 4
+        },
+        // when window width is >= 768px (Tablet)
+        768: {
+          slidesPerView: 2
+        },
+        // when window width is >= 320px (Phone)
+        320: {
+          slidesPerView: 1
+        }
+      }
     });
     // Initialize Swiper for upcoming movies
     let upcomingSlider = new Swiper('.upcoming_movies', {
@@ -292,6 +306,20 @@ if ($query->num_rows > 0) {
           document.querySelector('.blurry-bg2').style.backgroundImage = backgroundImage;
         },
       },
+      breakpoints: {
+        // when window width is >= 1024px (PC)
+        1024: {
+          slidesPerView: 4
+        },
+        // when window width is >= 768px (Tablet)
+        768: {
+          slidesPerView: 2
+        },
+        // when window width is >= 320px (Phone)
+        320: {
+          slidesPerView: 1
+        }
+      }
     });
   });
   document.addEventListener('DOMContentLoaded', function() {

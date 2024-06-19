@@ -1,5 +1,7 @@
 <?php
 session_start();
+
+// Made sure only authorized users have access and can't be accessed by url change
 if (!isset($_SESSION['username'])) {
     header("Location: index.php");
     exit();
@@ -43,6 +45,7 @@ if (!isset($_SESSION['username'])) {
                             <span>Bookings</span>
                         </a>
                     </li>
+                    <!-- To make sure staffs dont have access to specific pages  -->
                     <?php if ($_SESSION['user_type'] != 1) { ?>
                         <li>
                             <a href="feedback.php">
@@ -81,11 +84,13 @@ if (!isset($_SESSION['username'])) {
         </div>
 
         <div class="movies_details_admin">
+            <!-- Alert messages -->
             <?php
             if (isset($_SESSION['alert_message'])) {
                 echo "<div class='alert alert-success mt-3'>" . htmlspecialchars($_SESSION['alert_message']) . "</div>";
                 unset($_SESSION['alert_message']);
             } ?>
+            <!-- Movie Details -->
             <div class="card-body" id="moviesSection">
                 <div class="movie_head">
                     <h2>
@@ -97,6 +102,7 @@ if (!isset($_SESSION['username'])) {
                             <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
+                    <!-- This feature is only meant for admins -->
                     <?php
                     if ($_SESSION['user_type'] == 0) { ?>
                         <button class="addMovie">Add Movie</button>
@@ -106,6 +112,8 @@ if (!isset($_SESSION['username'])) {
                 <div class="row">
                     <?php
                     require "../php/db_connection.php";
+
+                    // Deleting
                     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["delete_movie_id"])) {
                         $movieIdToDelete = $_POST["delete_movie_id"];
                         $deleteQuery = $db->query("DELETE FROM movies WHERE movie_id = '$movieIdToDelete'");
@@ -116,6 +124,8 @@ if (!isset($_SESSION['username'])) {
                             echo "Error deleting movie.";
                         }
                     }
+
+                    // Searching
                     $searchQuery = isset($_GET['search']) ? $db->real_escape_string($_GET['search']) : '';
 
                     if ($searchQuery) {
@@ -133,6 +143,7 @@ if (!isset($_SESSION['username'])) {
                         $query = $db->query("SELECT * FROM movies ORDER BY movie_id DESC");
                     }
 
+                    // Movie Card Details
                     if ($query->num_rows > 0) {
                         while ($row = $query->fetch_assoc()) {
                             echo "<div class='col-lg-4'>";
