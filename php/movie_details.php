@@ -186,7 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_feedback'])) {
                 if ($feedback_query->num_rows > 0) {
                     while ($feedback_row = $feedback_query->fetch_assoc()) {
             ?>
-                    <p><span><?php echo htmlspecialchars($feedback_row["first_name"] . " " . $feedback_row["last_name"] . " : ") ?> </span><br><?php echo htmlspecialchars( $feedback_row['feedbacks']); ?></p>
+                    <p><span><?php echo htmlspecialchars($feedback_row["first_name"] . " " . $feedback_row["last_name"] . " : ") ?> </span><br><?php echo htmlspecialchars($feedback_row['feedbacks']); ?></p>
             <?php
                     }
                 } else {
@@ -198,6 +198,71 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_feedback'])) {
 
 <?php }
         } ?>
+
+<!-- Footer -->
+<div class="links">
+    <div class="column">
+        <h2>Our Company</h2>
+        <ul>
+            <li>Our Brands</li>
+            <li>Contact Us</li>
+            <li>FAQs</li>
+            <li>Corporate Information</li>
+            <li>Savoy Investor Connect</li>
+            <li>Investor Relations</li>
+            <li>Media Center</li>
+            <li>Careers</li>
+            <li>Savoy Privacy Policy</li>
+            <li>Terms & Conditions</li>
+        </ul>
+    </div>
+    <div class="column">
+        <h2>Movies</h2>
+        <ul>
+            <li>Movies</li>
+            <li>Theatres</li>
+            <li>Ratings Information</li>
+            <li>IMAX at Savoy</li>
+            <li>Dolby Cinema at Savoy</li>
+            <li>PRIME at Savoy</li>
+            <li>RealD 3D</li>
+        </ul>
+    </div>
+    <div class="column">
+        <h2>Programming</h2>
+        <ul>
+            <li>Private Theatre Rentals</li>
+            <li>Savoy Artisan Films</li>
+            <li>Savoy Thrills & Chills</li>
+            <li>Savoy Screen Unseen</li>
+            <li>Fan Faves</li>
+            <li>International Films</li>
+            <li>Film Festivals</li>
+            <li>Special Events</li>
+            <li>Sensory Friendly Films</li>
+            <li>Groups & Events</li>
+        </ul>
+    </div>
+    <div class="column">
+        <h2>More</h2>
+        <ul>
+            <li>Offers & Promotions</li>
+            <li>Gift Cards</li>
+            <li>Movie Merchandise</li>
+            <li>Savoy Merchandise</li>
+            <li>NFTs from Savoy</li>
+            <li>Mobile App</li>
+            <li>Savoy Scene</li>
+            <li>Request Refund</li>
+        </ul>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="logo">SAVOY THEATRES</div>
+    <p>WE MAKE BEST MOVIE EXPERIENCE.</p>
+    <p>&copy; Copyright 2024 Savoy Theatres</p>
+</footer>
 
 </body>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
