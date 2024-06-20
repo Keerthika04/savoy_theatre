@@ -62,11 +62,11 @@ if (!isset($_SESSION['username'])) {
                                 <span>Staffs</span>
                             </a>
                         </li>
-                    <li>
-                        <a href="promotion.php">
-                            <span>Promotions</span>
-                        </a>
-                    </li>
+                        <li>
+                            <a href="promotion.php">
+                                <span>Promotions</span>
+                            </a>
+                        </li>
                     <?php }; ?>
                     <li>
                         <a href="user_profile.php">
@@ -175,6 +175,14 @@ if (!isset($_SESSION['username'])) {
                             echo "</div>";
                             echo "</div>";
                         }
+                    } else {
+                        echo "<div class='w-100 mx-4'>";
+                        echo "<div class='card mb-4'>";
+                        echo "<div class='card-body'>";
+                        echo "<h4>No Movie Found</h4>";
+                        echo "</div>";
+                        echo "</div>";
+                        echo "</div>";
                     }
                     ?>
                 </div>

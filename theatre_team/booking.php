@@ -186,7 +186,7 @@ if (!isset($_SESSION['username'])) {
                         echo "<div class='w-100 mx-4'>";
                         echo "<div class='card mb-4'>";
                         echo "<div class='card-body'>";
-                        echo "<h4>No Booking available.</h4>";
+                        echo "<h4>No Booking Available</h4>";
                         echo "</div>";
                         echo "</div>";
                         echo "</div>";
