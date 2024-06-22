@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_feedback'])) {
                         <h1 class="with_language"><?php echo htmlspecialchars($row["movie_title"]); ?></h1>
                         <h3>Language - <?php echo htmlspecialchars($row["language"]); ?></h3>
 
-                        <?php if ($row["upcoming_movies"] == 0) : ?>
+                        <?php if ($row["current_movies"] == 1) : ?>
                             <a href="booking.php?movie=<?php echo htmlspecialchars($row["movie_id"]); ?>">Buy Tickets</a>
                         <?php endif; ?>
 

@@ -57,11 +57,11 @@ if (!isset($_SESSION['username'])) {
                                 <span>Staffs</span>
                             </a>
                         </li>
-                    <li>
-                        <a href="promotion.php">
-                            <span>Promotions</span>
-                        </a>
-                    </li>
+                        <li>
+                            <a href="promotion.php">
+                                <span>Promotions</span>
+                            </a>
+                        </li>
                     <?php }; ?>
                     <li>
                         <a href="user_profile.php">
@@ -121,9 +121,9 @@ if (!isset($_SESSION['username'])) {
                                       showtimes.date LIKE '%$searchQuery%' OR 
                                       showtimes.time LIKE '%$searchQuery%'";
 
-                        $query = $db->query("SELECT movies.movie_title, movies.language, showtimes.show_id, showtimes.date, showtimes.time FROM showtimes JOIN movies ON showtimes.movie_id = movies.movie_id WHERE ($searchSQL) ORDER BY showtimes.date DESC");
+                        $query = $db->query("SELECT movies.movie_title, movies.language, showtimes.movie_id, showtimes.show_id, showtimes.date, showtimes.time FROM showtimes JOIN movies ON showtimes.movie_id = movies.movie_id WHERE ($searchSQL) ORDER BY showtimes.date DESC");
                     } else {
-                        $query = $db->query("SELECT movies.movie_title, movies.language, showtimes.show_id, showtimes.date, showtimes.time FROM showtimes JOIN movies ON showtimes.movie_id = movies.movie_id  ORDER BY showtimes.date ASC");
+                        $query = $db->query("SELECT movies.movie_title, movies.language, showtimes.movie_id, showtimes.show_id, showtimes.date, showtimes.time FROM showtimes JOIN movies ON showtimes.movie_id = movies.movie_id  ORDER BY showtimes.date ASC");
                     }
 
                     if ($query->num_rows > 0) {
@@ -150,12 +150,12 @@ if (!isset($_SESSION['username'])) {
                             echo "<td>" . $row["time"] . "</td>";
                             echo "<form method='post' onsubmit=\"return confirm('Are you sure?');\">";
                             echo "<input type='hidden' name='delete_show_id' value='" . $row["show_id"] . "'>";
-                            echo "<td class='text-center'><button class='btn btn-warning edit-btn'><i class='fas fa-edit'></i></button></td>";
+                            echo "<td class='text-center'><button type='button' class='btn btn-warning edit-btn' data-toggle='modal' data-target='#editShowModal' data-show='" . htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8') . "'><i class='fas fa-edit'></i></button></td>";
                             echo "<td class='text-center'><button type='submit' class='btn btn-danger delete-btn'><i class='fas fa-trash-alt'></i></button></td>";
                             echo "</form>";
                             echo "</tr>";
                         }
-                    }else {
+                    } else {
                         echo "<div class='w-100 mx-4'>";
                         echo "<div class='card mb-4'>";
                         echo "<div class='card-body'>";
@@ -214,6 +214,50 @@ if (!isset($_SESSION['username'])) {
         </div>
     </div>
 
+    <!-- Edit Showtimes modal -->
+    <div id="editShowModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Edit ShowTime</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editShowtimeForm" action="php/edit_showtime.php" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="show_id" id="edit_show_id">
+                        <div class="form-group">
+                            <label for="edit_movie">Movie:</label>
+                            <select name="movie_id" id="edit_movie" class="form-control" required>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit_date">Date:</label>
+                            <input type="date" id="edit_date" class="form-control" name="date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit_time">Time:</label>
+                            <select id="edit_time" name="time" class="form-control" required>
+                                <option value="09.00am">09.00am</option>
+                                <option value="12.30pm">12.30pm</option>
+                                <option value="04.30pm">04.30pm</option>
+                                <option value="06.30pm">06.30pm</option>
+                                <option value="09.00pm">09.00pm</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -230,6 +274,11 @@ if (!isset($_SESSION['username'])) {
                     $.each(data, function(index, movie) {
                         movieSelect.append('<option value="' + movie.movie_id + '">' + movie.movie_title + '</option>');
                     });
+                    var editMovieSelect = $('#edit_movie');
+                    editMovieSelect.empty();
+                    $.each(data, function(index, movie) {
+                        editMovieSelect.append('<option value="' + movie.movie_id + '">' + movie.movie_title + '</option>');
+                    });
                 },
                 error: function() {
                     alert('Failed to fetch movies');
@@ -240,8 +289,10 @@ if (!isset($_SESSION['username'])) {
         fetchMovies();
 
         const modal = document.getElementById("showModal");
+        const editShowModal = document.getElementById("editShowModal");
         const btn = document.querySelector(".addShow");
         const span = document.getElementsByClassName("close")[0];
+        const closeEditBtn = document.querySelector("#editShowModal .close");
 
         btn.onclick = function() {
             modal.style.display = "block";
@@ -251,11 +302,27 @@ if (!isset($_SESSION['username'])) {
             modal.style.display = "none";
         }
 
+        closeEditBtn.onclick = function() {
+            editShowModal.style.display = "none";
+        }
+
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
+            if (event.target == editShowModal) {
+                editShowModal.style.display = "none";
+            }
         }
+
+        $('.edit-btn').on('click', function() {
+            var show = $(this).data('show');
+            $('#edit_show_id').val(show.show_id);
+            $('#edit_movie').val(show.movie_id);
+            $('#edit_date').val(show.date);
+            $('#edit_time').val(show.time);
+            editShowModal.style.display = "block";
+        });
     });
 </script>
 

@@ -151,7 +151,6 @@ if (!isset($_SESSION['username'])) {
                             if ($_SESSION['user_type'] == 0) {
                                 echo "<form method='post' class='card-header' onsubmit=\"return confirm('Are you sure?');\">";
                                 echo "<input type='hidden' name='delete_movie_id' value='" . $row["movie_id"] . "'>";
-                                echo "<button class='btn btn-success edit-btn mr-2'><i class='fas fa-edit'></i></button>";
                                 echo "<button type='submit' class='btn btn-danger delete-btn'><i class='fas fa-trash-alt'></i></button>";
                                 echo "</form>";
                             }
@@ -171,6 +170,35 @@ if (!isset($_SESSION['username'])) {
                             echo "<p class='card-text'><strong>Current Movies:</strong> " . $row["current_movies"] . "</p>";
                             echo "<p class='card-text'><strong>Upcoming Movies:</strong> " . $row["upcoming_movies"] . "</p>";
                             echo "<a href='" . $row["movie_trailer"] . "' target='_blank' class='btn btn-primary'>Watch Trailer</a>";
+                            echo"<div class='modal-footer mt-4'>";
+                            if ($row["upcoming_movies"]) {
+                                echo "<form method='post' action='php/movie_state.php'onsubmit=\"return confirm('Are you sure to change to current movie?');\">";
+                                echo "<input type='hidden' name='confirm_current' value='" . $row["movie_id"] . "'>";
+                                echo "<button  class='btn btn-success'>Current Movie</button>";
+                                echo "</form>";
+                            }
+                            if ($row["current_movies"]) {
+                                echo "<form method='post' action='php/movie_state.php'onsubmit=\"return confirm('Are you sure to change to finished movie?');\">";
+                                echo "<input type='hidden' name='confirm_finished' value='" . $row["movie_id"] . "'>";
+                                echo "<button  class='btn btn-danger'>Finished</button>";
+                                echo "</form>";
+                                echo "<form method='post' action='php/movie_state.php'onsubmit=\"return confirm('Are you sure to change to upcoming movie?');\">";
+                                echo "<input type='hidden' name='confirm_upcoming' value='" . $row["movie_id"] . "'>";
+                                echo "<button  class='btn btn-primary'>Change Upcoming Movie</button>";
+                                echo "</form>";
+                            }                            
+                            
+                            if (!$row["upcoming_movies"] && !$row["current_movies"]) {
+                                echo "<form method='post' action='php/movie_state.php'onsubmit=\"return confirm('Are you sure to change to current movie?');\">";
+                                echo "<input type='hidden' name='confirm_current' value='" . $row["movie_id"] . "'>";
+                                echo "<button  class='btn btn-success'>Current Movie</button>";
+                                echo "</form>";
+                                echo "<form method='post' action='php/movie_state.php'onsubmit=\"return confirm('Are you sure to change to upcoming movie?');\">";
+                                echo "<input type='hidden' name='confirm_upcoming' value='" . $row["movie_id"] . "'>";
+                                echo "<button  class='btn btn-primary'>Upcoming Movie</button>";
+                                echo "</form>";
+                            }
+                            echo "</div>";
                             echo "</div>";
                             echo "</div>";
                             echo "</div>";
