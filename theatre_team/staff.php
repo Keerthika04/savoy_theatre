@@ -137,7 +137,7 @@ if (!isset($_SESSION['username']) || $_SESSION['user_type'] != 0) {
                         </div>
 
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="submit" class="btn btn-success">Save changes</button>
                         </div>
                     </form>
                 </div>
@@ -288,23 +288,17 @@ if (!isset($_SESSION['username']) || $_SESSION['user_type'] != 0) {
 
                         $query = $db->query("SELECT * FROM users WHERE  user_type = 1 AND ($searchSQL) ORDER BY user_id DESC");
                     } else {
-                        $query = $db->query("SELECT * FROM users WHERE user_type = 1 ORDER BY user_id DESC");
+                    $query = $db->query("SELECT * FROM users WHERE user_type = 1 ORDER BY user_id DESC");
                     }
 
                     if ($query->num_rows > 0) {
                         while ($row = $query->fetch_assoc()) {
                             echo "<div class='col-lg-4'>";
                             echo "<div class='card mb-4'>";
-                            echo "<div class='card-header flex justify-content-end'>";
-                            echo "<form method='post' action='staff.php' onsubmit=\"return confirm('Are you sure?');\">";
+                            echo "<form method='post' action='staff.php' class='card-header' onsubmit=\"return confirm('Are you sure?');\">";
                             echo "<input type='hidden' name='delete_staff_id' value='" . $row["user_id"] . "'>";
                             echo "<button type='submit' class='btn btn-danger delete-btn'><i class='fas fa-trash-alt'></i></button>";
                             echo "</form>";
-                            echo "<form method='post' class='pl-2' action='staff.php'> ";
-                            echo "<input type='hidden' name='delete_staff_id' value='" . $row["user_id"] . "'>";
-                            echo "<button class='btn btn-success edit-btn mr-2' data-toggle='modal' data-target='#editStaffModal' data-staff='" . htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8') . "'><i class='fas fa-edit'></i></button>";
-                            echo "</form>";
-                            echo "</div>";
                             echo "<div class='card-body'>";
                             echo "<p class='card-text'><strong>Username:</strong> " . $row["username"] . "</p>";
                             echo "<p class='card-text'><strong>First Name:</strong> " . $row["first_name"] . "</p>";
@@ -331,63 +325,6 @@ if (!isset($_SESSION['username']) || $_SESSION['user_type'] != 0) {
         </div>
     </div>
 
-        <!-- Edit Staff Modal -->
-    <div id="editStaffModal" class="modal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Staff Details</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <form id="editStaffForm" action="update_staff.php" method="POST">
-                        <input type="hidden" id="edit_staff_id" name="edit_staff_id">
-
-                        <div class="form-group">
-                            <label for="edit_first_name">First Name:</label>
-                            <input type="text" id="edit_first_name" name="edit_first_name" class="form-control" required placeholder="First Name" autocomplete="off">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="edit_last_name">Last Name:</label>
-                            <input type="text" id="edit_last_name" name="edit_last_name" class="form-control" required placeholder="Last Name" autocomplete="off">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="edit_phone_no">Phone Number:</label>
-                            <input type="text" id="edit_phone_no" name="edit_phone_no" class="form-control" required placeholder="+94*********" autocomplete="off">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="edit_email">Email:</label>
-                            <input type="email" id="edit_email" name="edit_email" class="form-control" required placeholder="johndoe@gmail.com" autocomplete="off">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="edit_username">Username:</label>
-                            <input type="text" id="edit_username" name="edit_username" class="form-control" required placeholder="Username" autocomplete="off">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="edit_password">Password:</label>
-                            <input type="password" id="edit_password" name="edit_password" class="form-control" placeholder="Leave blank to keep unchanged">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="edit_confirm_password">Confirm Password:</label>
-                            <input type="password" id="edit_confirm_password" name="edit_confirm_password" class="form-control" placeholder="Leave blank to keep unchanged">
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -408,15 +345,6 @@ if (!isset($_SESSION['username']) || $_SESSION['user_type'] != 0) {
                 modal.style.display = "none";
             }
         }
-        $('.edit-btn').click(function() {
-            var staffData = $(this).data('staff');
-            $('#edit_staff_id').val(staffData.user_id);
-            $('#edit_first_name').val(staffData.first_name);
-            $('#edit_last_name').val(staffData.last_name);
-            $('#edit_phone_no').val(staffData.phone_no);
-            $('#edit_email').val(staffData.email);
-            $('#edit_username').val(staffData.username);
-        });
     });
 </script>
 
