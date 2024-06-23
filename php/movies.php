@@ -131,8 +131,6 @@ if ($query->num_rows > 0) {
                                 <h2><?= $movie['movie_title'] ?></h2>
                                 <p><?= $movie['duration'] ?></p>
                                 <p>Release on <?= $movie['released_date'] ?></p>
-                                <a href="php/booking.php?movie=<?php echo htmlspecialchars($movie["movie_id"]); ?>" class="buy-tickets"> <span></span><span></span><span></span>
-                                    <span></span>Buy Tickets</a>
                             </div>
                         </div>
                     <?php endforeach; ?>

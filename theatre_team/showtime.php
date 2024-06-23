@@ -103,6 +103,7 @@ if (!isset($_SESSION['username'])) {
                     require "../php/db_connection.php";
                     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["delete_show_id"])) {
                         $showIdToDelete = $_POST["delete_show_id"];
+                         $db->query("DELETE FROM booking WHERE showtime_id = '$showIdToDelete'");
                         $deleteQuery = $db->query("DELETE FROM showtimes WHERE show_id = '$showIdToDelete'");
                         if ($deleteQuery) {
                             header("Location: " . $_SERVER['PHP_SELF']);

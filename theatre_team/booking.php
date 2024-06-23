@@ -8,6 +8,7 @@ if (!isset($_SESSION['username'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Savoy</title>
@@ -58,11 +59,11 @@ if (!isset($_SESSION['username'])) {
                                 <span>Staffs</span>
                             </a>
                         </li>
-                    <li>
-                        <a href="promotion.php">
-                            <span>Promotions</span>
-                        </a>
-                    </li>
+                        <li>
+                            <a href="promotion.php">
+                                <span>Promotions</span>
+                            </a>
+                        </li>
                     <?php }; ?>
                     <li>
                         <a href="user_profile.php">
@@ -98,7 +99,14 @@ if (!isset($_SESSION['username'])) {
                     require "../php/db_connection.php";
                     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["delete_booking_id"])) {
                         $bookingIdToDelete = $_POST["delete_booking_id"];
+
+                        $parking = $db->query("SELECT parking_id FROM booking WHERE booking_id =  '$bookingIdToDelete'");
+                        $row = $parking->fetch_assoc();
+                        $parking_id = $row['parking_id'];
+
                         $deleteQuery = $db->query("DELETE FROM booking WHERE booking_id = '$bookingIdToDelete'");
+                        $db->query("DELETE FROM parking WHERE parking_id = '$parking_id'");
+
                         if ($deleteQuery) {
                             header("Location: " . $_SERVER['PHP_SELF']);
                             exit();
@@ -133,7 +141,7 @@ if (!isset($_SESSION['username'])) {
                                             JOIN movies ON showtimes.movie_id = movies.movie_id WHERE ($searchSQL) 
                                             ORDER BY booking_id DESC");
                     } else {
-                    $query = $db->query(" SELECT booking.booking_id, booking.adult, 
+                        $query = $db->query(" SELECT booking.booking_id, booking.adult, 
                                             booking.children, booking.total, booking.seats, booking.confirm_booking, 
                                             users.username, showtimes.date AS show_date, showtimes.time AS show_time, 
                                             parking.vehicle,  movies.movie_id, movies.movie_title
@@ -167,14 +175,14 @@ if (!isset($_SESSION['username'])) {
                             echo "<tr><td><strong>Seats:</strong></td><td>" . $row["seats"] . "</td></tr>";
                             echo "<tr><td><strong>Confirmation:</strong></td><td>" . ($row["confirm_booking"] ? 'Confirmed' : 'Pending') . "</td></tr>";
                             echo "</table>";
-                            echo"<div class='modal-footer'>";
+                            echo "<div class='modal-footer'>";
                             if (!$row["confirm_booking"]) {
                                 echo "<form method='post' action='php/confirm_booking.php'onsubmit=\"return confirm('Are you sure?');\">";
                                 echo "<input type='hidden' name='confirm_booking_id' value='" . $row["booking_id"] . "'>";
                                 echo "<button  class='btn btn-primary'>Confirm</button>";
                                 echo "</form>";
-                            }else{
-       
+                            } else {
+
                                 echo "<div class='alert alert-success'> Confirmed </div>";
                             }
                             echo "</div>";
@@ -182,7 +190,7 @@ if (!isset($_SESSION['username'])) {
                             echo "</div>";
                             echo "</div>";
                         }
-                    }else {
+                    } else {
                         echo "<div class='w-100 mx-4'>";
                         echo "<div class='card mb-4'>";
                         echo "<div class='card-body'>";

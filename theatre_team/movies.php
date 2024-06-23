@@ -116,6 +116,27 @@ if (!isset($_SESSION['username'])) {
                     // Deleting
                     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["delete_movie_id"])) {
                         $movieIdToDelete = $_POST["delete_movie_id"];
+
+                        $db->query("DELETE FROM banner WHERE movie_id = '$movieIdToDelete'");
+                        $db->query("DELETE FROM movie_feedbacks WHERE movie_id = '$movieIdToDelete'");
+
+                        // Get all showtime_ids related to the movie
+                        $showtime_result = $db->query("SELECT show_id FROM showtimes WHERE movie_id = '$movieIdToDelete'");
+                        $showtime_ids = [];
+                        while ($row = $showtime_result->fetch_assoc()) {
+                            $showtime_ids[] = $row['show_id'];
+                        }
+
+                        // Delete all bookings that reference these showtimes
+                        foreach ($showtime_ids as $showtime_id) {
+                            if (!$db->query("DELETE FROM booking WHERE showtime_id = '$showtime_id'")) {
+                                echo "Error deleting related bookings: " . $mysqli->error;
+                                exit;
+                            }
+                        }
+
+                        $db->query("DELETE FROM showtimes WHERE movie_id = '$movieIdToDelete'");
+
                         $deleteQuery = $db->query("DELETE FROM movies WHERE movie_id = '$movieIdToDelete'");
                         if ($deleteQuery) {
                             header("Location: " . $_SERVER['PHP_SELF']);
@@ -170,7 +191,7 @@ if (!isset($_SESSION['username'])) {
                             echo "<p class='card-text'><strong>Current Movies:</strong> " . $row["current_movies"] . "</p>";
                             echo "<p class='card-text'><strong>Upcoming Movies:</strong> " . $row["upcoming_movies"] . "</p>";
                             echo "<a href='" . $row["movie_trailer"] . "' target='_blank' class='btn btn-primary'>Watch Trailer</a>";
-                            echo"<div class='modal-footer mt-4'>";
+                            echo "<div class='modal-footer mt-4'>";
                             if ($row["upcoming_movies"]) {
                                 echo "<form method='post' action='php/movie_state.php'onsubmit=\"return confirm('Are you sure to change to current movie?');\">";
                                 echo "<input type='hidden' name='confirm_current' value='" . $row["movie_id"] . "'>";
@@ -186,8 +207,8 @@ if (!isset($_SESSION['username'])) {
                                 echo "<input type='hidden' name='confirm_upcoming' value='" . $row["movie_id"] . "'>";
                                 echo "<button  class='btn btn-primary'>Change Upcoming Movie</button>";
                                 echo "</form>";
-                            }                            
-                            
+                            }
+
                             if (!$row["upcoming_movies"] && !$row["current_movies"]) {
                                 echo "<form method='post' action='php/movie_state.php'onsubmit=\"return confirm('Are you sure to change to current movie?');\">";
                                 echo "<input type='hidden' name='confirm_current' value='" . $row["movie_id"] . "'>";

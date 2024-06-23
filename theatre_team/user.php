@@ -101,6 +101,10 @@ if (!isset($_SESSION['username']) || $_SESSION['user_type'] != 0) {
                     require "../php/db_connection.php";
                     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["delete_user_id"])) {
                         $userIdToDelete = $_POST["delete_user_id"];
+
+                        $db->query("DELETE FROM movie_feedbacks WHERE user_id = '$userIdToDelete'");
+                        $db->query("DELETE FROM booking WHERE customer_id = '$userIdToDelete'");
+                        
                         $deleteQuery = $db->query("DELETE FROM users WHERE user_id = '$userIdToDelete'");
                         if ($deleteQuery) {
                             header("Location: " . $_SERVER['PHP_SELF']);
